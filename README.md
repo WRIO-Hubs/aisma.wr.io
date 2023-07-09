@@ -1,2 +1,1 @@
-# AISMA
-AI Social Media Assistant
+# aisma.wr.io
