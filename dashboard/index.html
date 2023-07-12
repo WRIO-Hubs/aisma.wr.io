@@ -456,7 +456,7 @@
 							} else {
 		          	document.getElementById('criteriaInput').value = record.fields.Criteria;
 							}
-							window.localStorage.setItem('Criteria', record.fields.Criteria);
+							window.localStorage.setItem('criteria', record.fields.Criteria);
 
 		        }
 		      }
@@ -517,6 +517,26 @@
 		      }
 		    }
 		  });
+
+
+
+
+
+
+			const socket = new WebSocket('wss://aisma.wr.io/');
+
+			socket.addEventListener('open', function(event) {
+				console.log('WebSocket connection opened');
+				// You can send messages to the server using socket.send()
+			});
+
+			socket.addEventListener('message', function(event) {
+				console.log('WebSocket message received:', event.data);
+			});
+
+			socket.addEventListener('close', function(event) {
+				console.log('WebSocket connection closed');
+			});
 		</script>
 
 

@@ -13,7 +13,7 @@ function checkFollowersPage() {
     console.log('Followers page for:', username);
 
     // Check elements and text for matches
-    const elements = document.querySelectorAll('[data-testid="cellInnerDiv"] .css-901oao.r-18jsvk2.r-37j5jr.r-a023e6.r-16dba41.r-rjixqe.r-bcqeeo.r-1h8ys4a.r-1jeg54m.r-qvutc0');
+    const elements = document.querySelectorAll('[data-testid="UserCell"]');
     elements.forEach((element) => {
       const textElements = element.querySelectorAll('.css-901oao.css-16my406.r-poiln3.r-bcqeeo.r-qvutc0');
       let mergedText = '';
@@ -21,16 +21,22 @@ function checkFollowersPage() {
         const text = textElement.textContent;
         mergedText += text + ' ';
       });
-      console.log('mergedText:', mergedText);
+      //console.log('mergedText:', mergedText);
 
-      const matchWords = ['founder', 'saas', 'business'];
+      // Retrieve match words from local storage
+      const criteria = localStorage.getItem('criteria');
+      const matchWords = criteria ? criteria.split(',') : [];
+      console.log('Criteria:', criteria);
+
       const hasMatch = matchWords.some((word) => mergedText.toLowerCase().includes(word.toLowerCase()));
 
       if (hasMatch) {
         console.log('MATCH!!!');
-        element.style.border = '4px solid green';
+        element.style.border = '1px solid green';
+        element.style.backgroundColor = 'lightgreen';
       } else {
         element.style.border = 'none';
+        element.style.backgroundColor = 'initial';
       }
     });
   }
@@ -39,7 +45,7 @@ function checkFollowersPage() {
 // Restart the intervalID on user action
 function restartInterval() {
   clearInterval(intervalID);
-  intervalID = setInterval(checkFollowersPage, 5000);
+  intervalID = setInterval(checkFollowersPage, 3000);
 }
 
 // Run the initial check
@@ -50,4 +56,4 @@ window.addEventListener('mousemove', restartInterval);
 // Add more event listeners as needed for other user actions
 
 // Start the interval
-intervalID = setInterval(checkFollowersPage, 5000);
+intervalID = setInterval(checkFollowersPage, 3000);
