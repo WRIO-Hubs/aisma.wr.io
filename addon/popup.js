@@ -1,3 +1,4 @@
+
 // Send a message to the background script to retrieve the saved link
 chrome.runtime.sendMessage({ action: 'getSavedLink' }, function (response) {
   if (response && response.link) {

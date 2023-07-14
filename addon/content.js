@@ -1,20 +1,38 @@
 let previousMergedText = '';
+let hoveredElement = null;
+let timeoutId = null;
 
-function logTextAndLink(text, link) {
-  console.log('Text:', text);
-  console.log('Link:', link);
-}
+function checkMatchWords(mergedText, link, matchWords) {
+  const matchedWords = matchWords.filter((word) => mergedText.toLowerCase().includes(word.toLowerCase()));
 
-function checkMatchWords(mergedText, link) {
-  const matchWords = ['founder', 'saas', 'business'];
-  const hasMatch = matchWords.some((word) => mergedText.toLowerCase().includes(word.toLowerCase()));
-
-  if (hasMatch) {
-    console.log('A match! Stored:', link);
+  if (matchedWords.length > 0) {
+    //console.log('A match! Stored:', link);
+    //console.log('Matched words:', matchedWords);
+    hoveredElement.style.border = '1px solid green';
+    hoveredElement.style.backgroundColor = 'lightgreen';
   }
 }
 
+function setHoveredElement(element) {
+  if (hoveredElement) {
+    clearTimeout(timeoutId);
+    hoveredElement.removeAttribute('id');
+  }
+
+  hoveredElement = element;
+  hoveredElement.setAttribute('id', 'hovered');
+}
+
 function findElement(event) {
+  const cellInnerDivElements = document.querySelectorAll('[data-testid="cellInnerDiv"]');
+
+  cellInnerDivElements.forEach((element) => {
+    element.addEventListener('mouseover', () => {
+      clearTimeout(timeoutId);
+      setHoveredElement(element);
+    });
+  });
+
   const hoverCardElements = document.querySelectorAll('[data-testid="HoverCard"]');
 
   hoverCardElements.forEach((hoverCardElement) => {
@@ -33,12 +51,21 @@ function findElement(event) {
       });
 
       if (mergedText !== previousMergedText) {
-        logTextAndLink(mergedText, link);
-        checkMatchWords(mergedText, link);
+        chrome.storage.local.get('criteria', function(result) {
+          const criteria = result.criteria;
+          const matchWords = criteria ? criteria.split(',').map(word => word.trim()) : [];
+
+          checkMatchWords(mergedText, link, matchWords);
+        });
+
         previousMergedText = mergedText;
       }
     }
   });
 }
 
-document.addEventListener('mouseover', findElement);
+document.addEventListener('mouseover', (event) => {
+  timeoutId = setTimeout(() => {
+    findElement(event);
+  }, 1000);
+});

@@ -2,13 +2,22 @@
   "manifest_version": 3,
   "name": "AI SM Assistant",
   "version": "1.1",
+  "externally_connectable": {
+    "ids": ["aoanplmcijnbbcnnllmeagbkdhkkdkep"],
+    "matches": ["*://127.0.0.1/*"]
+  },
   "permissions": [
     "tabs",
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "content_scripts": [
     {
-      "matches": ["*://*.twitter.com/*"],
+      "matches": [
+        "*://127.0.0.1/*",
+        "*://aisma.wr.io/*",
+        "*://twitter.com/*"
+      ],
       "js": ["content.js", "followers.js"]
     }
   ],

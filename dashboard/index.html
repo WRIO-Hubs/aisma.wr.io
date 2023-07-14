@@ -423,7 +423,8 @@
 		    window.location.href = "/sign_in";
 		  }
 
-		  var emailRecordId = localStorage.getItem("emailRecordId");
+			var emailRecordId = localStorage.getItem("emailRecordId");
+
 
 		  fetch(`https://aisma-dashboard.wrio.workers.dev/?emailRecordId=${emailRecordId}`)
 		    .then(response => response.json())
@@ -498,6 +499,17 @@
 		    } else {
 		      const criteria = document.getElementById('criteriaInput').value;
 
+					const extensionId = 'aoanplmcijnbbcnnllmeagbkdhkkdkep';
+					// After the user logs in and you have the criteria value
+					chrome.runtime.sendMessage(extensionId, { criteria }, function(response) {
+						//console.log('Sending criteria!');
+						if (!response.success) {
+							handleError(url);
+						} else {
+							//console.log('Criteria sent successfully!');
+						}
+					});
+
 		      try {
 		        const criteriaResponse = await fetch(`https://aisma-dashboard.wrio.workers.dev/api/storeCriteria?emailRecordId=${emailRecordId}&criteria=${criteria}`, {
 		          method: 'POST',
@@ -519,24 +531,6 @@
 		  });
 
 
-
-
-
-
-			const socket = new WebSocket('wss://aisma.wr.io/');
-
-			socket.addEventListener('open', function(event) {
-				console.log('WebSocket connection opened');
-				// You can send messages to the server using socket.send()
-			});
-
-			socket.addEventListener('message', function(event) {
-				console.log('WebSocket message received:', event.data);
-			});
-
-			socket.addEventListener('close', function(event) {
-				console.log('WebSocket connection closed');
-			});
 		</script>
 
 
