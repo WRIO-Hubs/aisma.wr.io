@@ -5,11 +5,10 @@
   "version": "1.1",
   "externally_connectable": {
     "ids": ["aoanplmcijnbbcnnllmeagbkdhkkdkep"],
-    "matches": ["*://127.0.0.1/*"]
+    "matches": ["*://127.0.0.1/*", "*://aisma.wr.io/*"]
   },
   "permissions": [
     "tabs",
-    "activeTab",
     "storage"
   ],
   "content_scripts": [
@@ -30,5 +29,5 @@
      "32": "icon32.png",
      "48": "icon48.png",
      "128": "icon128.png"
-   },
+   }
 }

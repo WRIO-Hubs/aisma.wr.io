@@ -502,11 +502,11 @@
 					const extensionId = 'aoanplmcijnbbcnnllmeagbkdhkkdkep';
 					// After the user logs in and you have the criteria value
 					chrome.runtime.sendMessage(extensionId, { criteria }, function(response) {
-						//console.log('Sending criteria!');
+						console.log('Sending criteria!');
 						if (!response.success) {
 							handleError(url);
 						} else {
-							//console.log('Criteria sent successfully!');
+							console.log('Criteria sent successfully!');
 						}
 					});
 
