@@ -5,13 +5,29 @@ let timeoutId = null;
 function checkMatchWords(mergedText, link, matchWords) {
   const matchedWords = matchWords.filter((word) => mergedText.toLowerCase().includes(word.toLowerCase()));
 
-  if (matchedWords.length > 0) {
-    //console.log('A match! Stored:', link);
-    //console.log('Matched words:', matchedWords);
+  if (matchedWords.length > 0 && hoveredElement) {
     hoveredElement.style.border = '1px solid green';
     hoveredElement.style.backgroundColor = 'lightgreen';
+
+    const scanLink = document.createElement('a');
+    scanLink.setAttribute('href', link);
+    scanLink.innerText = 'Scan';
+    scanLink.style.margin = '4px';
+
+    const targetElement = hoveredElement.querySelector('.css-1dbjc4n.r-1joea0r > .css-1dbjc4n.r-1awozwy.r-6koalj.r-18u37iz');
+    if (targetElement) {
+      const parentElement = targetElement.parentNode;
+      parentElement.insertBefore(scanLink, targetElement);
+    }
+
+    scanLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      chrome.runtime.sendMessage({ openScanUrl: link });
+    });
   }
 }
+
 
 function setHoveredElement(element) {
   if (hoveredElement) {

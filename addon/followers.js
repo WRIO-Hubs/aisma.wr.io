@@ -1,7 +1,6 @@
 // Check if the current URL matches the followers page pattern
 function checkFollowersPage() {
   const currentURL = window.location.href;
-  console.log('currentURL:', currentURL);
 
   const followersPagePattern = /^https?:\/\/twitter\.com\/([^/]+)\/followers(\/\w+)?$/;
   const match = currentURL.match(followersPagePattern);

@@ -5,11 +5,14 @@
   "version": "1.1",
   "externally_connectable": {
     "ids": ["aoanplmcijnbbcnnllmeagbkdhkkdkep"],
-    "matches": ["*://127.0.0.1/*", "*://aisma.wr.io/*"]
+    "matches": ["*://127.0.0.1/*", "*://aisma.wr.io/*"],
+    "accepts_tls_channel_id": false
   },
   "permissions": [
     "tabs",
-    "storage"
+    "storage",
+    "activeTab",
+    "runtime.sendMessage"
   ],
   "content_scripts": [
     {
@@ -18,7 +21,7 @@
         "*://aisma.wr.io/*",
         "*://twitter.com/*"
       ],
-      "js": ["content.js", "followers.js"]
+      "js": ["content.js", "followers.js", "twitter_profile.js"]
     }
   ],
   "background": {
@@ -29,5 +32,8 @@
      "32": "icon32.png",
      "48": "icon48.png",
      "128": "icon128.png"
-   }
+   },
+   "action": {
+      "default_popup": "popup.html"
+    }
 }

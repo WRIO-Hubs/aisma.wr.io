@@ -293,7 +293,7 @@
 														<!--begin::Actions-->
 														<div class="text-center">
 															<!--begin::Submit button-->
-															<button id="kt_submit" type="submit" class="btn btn-lg btn-primary w-100 mb-5">
+															<button id="kt_submit" style="display:none" type="submit" class="btn btn-lg btn-primary w-100 mb-5">
 																<span class="indicator-label">Submit</span>
 																<span class="indicator-progress">Please wait...
 																<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
@@ -303,6 +303,17 @@
 														<!--end::Actions-->
 													</form>
 													<!--end::Form-->
+<br><br><br>
+													<!--begin::Wrapper-->
+													<div class="d-flex flex-stack mb-2">
+														<!--begin::Label-->
+														<label class="form-label fw-bold text-dark fs-6 mb-0">Collected Profiles</label>
+														<!--end::Label-->
+													</div>
+													<!--end::Wrapper-->
+													<!--begin::Table-->
+													<div id="twitter_collection"></div>
+													<!--end::Table-->
 												</div>
 												<!--end::Wrapper-->
 											</div>
@@ -425,7 +436,6 @@
 
 			var emailRecordId = localStorage.getItem("emailRecordId");
 
-
 		  fetch(`https://aisma-dashboard.wrio.workers.dev/?emailRecordId=${emailRecordId}`)
 		    .then(response => response.json())
 		    .then(data => {
@@ -452,6 +462,23 @@
 		          document.getElementById('handle_true').style.display = 'block';
 		          document.getElementById('handleInput').value = record.fields.TwitterHandle;
 
+							const twitterHandles = record.fields.TwitterContacts.split(',');
+							const twitterCollection = document.getElementById('twitter_collection');
+
+							twitterHandles.forEach(handle => {
+							  const link = document.createElement('a');
+							  link.href = `https://twitter.com/${handle}`;
+							  link.textContent = handle;
+							  link.target = "_blank";
+
+							  const paragraph = document.createElement('p');
+							  paragraph.appendChild(link);
+
+							  twitterCollection.appendChild(paragraph);
+							});
+
+
+
 							if (!record.fields.Criteria){
 								document.getElementById('criteriaInput').value = "business, biz, founder";
 							} else {
@@ -460,6 +487,8 @@
 							window.localStorage.setItem('criteria', record.fields.Criteria);
 
 		        }
+
+						document.getElementById('kt_submit').style.display = 'block';
 		      }
 		    })
 		    .catch(err => {
@@ -497,39 +526,41 @@
 						location.reload();
 		      }
 		    } else {
-		      const criteria = document.getElementById('criteriaInput').value;
+					const criteria = document.getElementById('criteriaInput').value;
+					const emailRecordId = localStorage.getItem("emailRecordId");
 
 					const extensionId = 'aoanplmcijnbbcnnllmeagbkdhkkdkep';
-					// After the user logs in and you have the criteria value
-					chrome.runtime.sendMessage(extensionId, { criteria }, function(response) {
-						console.log('Sending criteria!');
-						if (!response.success) {
-							handleError(url);
-						} else {
-							console.log('Criteria sent successfully!');
-						}
+
+					// After the user logs in and you have the criteria value and emailRecordId
+					chrome.runtime.sendMessage(extensionId, { criteria, emailRecordId }, function(response) {
+					  //console.log('Sending criteria and emailRecordId!');
+					  if (!response.success) {
+					    handleError(url);
+					  } else {
+					    //console.log('Criteria and emailRecordId sent successfully!');
+					  }
 					});
 
-		      try {
-		        const criteriaResponse = await fetch(`https://aisma-dashboard.wrio.workers.dev/api/storeCriteria?emailRecordId=${emailRecordId}&criteria=${criteria}`, {
-		          method: 'POST',
-		          headers: {
-		            'Content-Type': 'application/json',
-		          },
-		        });
+					try {
+					  const criteriaResponse = await fetch(`https://aisma-dashboard.wrio.workers.dev/api/storeCriteria?emailRecordId=${emailRecordId}&criteria=${criteria}`, {
+					    method: 'POST',
+					    headers: {
+					      'Content-Type': 'application/json',
+					    },
+					  });
 
-		        if (!criteriaResponse.ok) {
-		          console.error('Failed to store criteria');
-		        } else {
-		          location.reload();
-		        }
-		      } catch (error) {
-		        console.error('Error:', error);
-						location.reload();
-		      }
+					  if (!criteriaResponse.ok) {
+					    console.error('Failed to store criteria');
+					  } else {
+					    location.reload();
+					  }
+					} catch (error) {
+					  console.error('Error:', error);
+					  location.reload();
+					}
+
 		    }
 		  });
-
 
 		</script>
 
