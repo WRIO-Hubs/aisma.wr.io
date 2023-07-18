@@ -313,6 +313,14 @@
 													<!--end::Wrapper-->
 													<!--begin::Table-->
 													<div id="twitter_collection"></div>
+													<div class="text-center">
+														<!--begin::Submit button-->
+														<button id="kt_delete" style="display:none" type="submit" class="btn btn-lg btn-danger w-100 mb-5">
+															<span class="indicator-label">Delete all</span>
+															<span class="indicator-progress">Please wait...
+															<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+														</button>
+													</div>
 													<!--end::Table-->
 												</div>
 												<!--end::Wrapper-->
@@ -460,6 +468,8 @@
 		        } else {
 		          document.getElementById('dashboard_handle').textContent = ' @' + record.fields.TwitterHandle;
 		          document.getElementById('handle_true').style.display = 'block';
+		          document.getElementById('kt_delete').style.display = 'block';
+
 		          document.getElementById('handleInput').value = record.fields.TwitterHandle;
 
 							const twitterHandles = record.fields.TwitterContacts.split(',');
@@ -561,6 +571,31 @@
 
 		    }
 		  });
+
+
+			document.getElementById('kt_delete').addEventListener('click', async (event) => {
+				event.preventDefault();
+
+				const emailRecordId = localStorage.getItem("emailRecordId");
+
+				try {
+					const response = await fetch(`https://aisma-dashboard.wrio.workers.dev/api/deleteTwitterContacts?emailRecordId=${emailRecordId}`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+					});
+
+					if (response.ok) {
+						location.reload();
+					} else {
+						console.error('Failed to delete Twitter contacts');
+					}
+				} catch (error) {
+					console.error('Error:', error);
+					location.reload();
+				}
+			});
 
 		</script>
 
