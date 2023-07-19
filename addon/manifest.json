@@ -21,7 +21,7 @@
         "*://aisma.wr.io/*",
         "*://twitter.com/*"
       ],
-      "js": ["content.js", "followers.js", "twitter_profile.js"]
+      "js": ["content.js", "twitter_followers.js", "twitter_profile.js", "twitter_dm.js", "twitter_dm_assist.js"]
     }
   ],
   "background": {

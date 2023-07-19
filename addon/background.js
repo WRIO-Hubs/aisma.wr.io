@@ -54,8 +54,6 @@ function updateBadgeCount() {
     // Retrieve the Twitter contacts from Airtable
     const apiUrl = `https://aisma-extension.wrio.workers.dev/api/getTwitterContacts?emailRecordId=${emailRecordId}`;
 
-    console.log("1");
-
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {

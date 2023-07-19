@@ -243,6 +243,29 @@
 							<div id="kt_app_content" class="app-content flex-column-fluid">
 								<!--begin::Content container-->
 								<div id="kt_app_content_container" class="app-container container-fluid">
+										<div class="notice d-flex bg-default rounded border-default border border-dashed mb-12 p-6">
+											<!--begin::Icon-->
+											<!--begin::Svg Icon | path: icons/duotune/general/gen044.svg-->
+											<span class="svg-icon svg-icon-2tx svg-icon-default me-4">
+												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"></rect>
+													<rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"></rect>
+													<rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"></rect>
+												</svg>
+											</span>
+											<!--end::Svg Icon-->
+											<!--end::Icon-->
+											<!--begin::Wrapper-->
+											<div class="d-flex flex-stack flex-grow-1">
+												<!--begin::Content-->
+												<div class="fw-semibold">
+													<h4 class="text-gray-900 fw-bold">The trial period is not active</h4>
+													<div class="fs-6 text-gray-700">Enjoy the free version of the product!</div>
+												</div>
+												<!--end::Content-->
+											</div>
+											<!--end::Wrapper-->
+										</div>
 									<!--begin::Card-->
 									<div class="card">
 										<!--begin::Card body-->
@@ -252,10 +275,6 @@
 												<!--begin::Title-->
 												<h2 class="fs-2x fw-bold mb-10">Hi<span id="dashboard_handle"></span>!<br>Welcome to Alpha public testing</h2>
 												<!--end::Title-->
-												<!--begin::Description-->
-												<p class="text-gray-400 fs-4 fw-semibold mb-10">At the moment, the trial period is not active.
-												<br />Enjoy the free version of the product.</p>
-												<!--end::Description-->
 												<!--begin::Wrapper-->
 												<div class="w-lg-500px p-10 p-lg-15 mx-auto">
 													<!--begin::Form-->
@@ -276,18 +295,46 @@
 														</div>
 														<!--end::Input group-->
 														<!--begin::Input group-->
-														<div id="handle_true" class="fv-row mb-10" style="display:none">
-															<!--begin::Wrapper-->
-															<div class="d-flex flex-stack mb-2">
-																<!--begin::Label-->
-																<label class="form-label fw-bold text-dark fs-6 mb-0">Enter Criteria</label>
-																<!--end::Label-->
+														<div id="handle_true" style="display:none">
+															<div class="fv-row mb-10">
+																<!--begin::Wrapper-->
+																<div class="d-flex flex-stack mb-2">
+																	<!--begin::Label-->
+																	<label class="form-label fw-bold text-dark fs-6 mb-0">Criteria<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="AISMA will highlight all Twitter profiles where it finds at least one of the specified words or letter combinations. It is not case-sensitive"></i></label>
+																	<!--end::Label-->
+																</div>
+																<!--end::Wrapper-->
+																<!--begin::Input-->
+																<input id="criteriaInput" class="form-control form-control-lg form-control-solid mb-3" type="text" name="handle" autocomplete="off" />
+																<!--end::Input-->
+																<div class="text-muted text-left">E.g.: business, biz, founder</div>
 															</div>
-															<!--end::Wrapper-->
-															<!--begin::Input-->
-															<input id="criteriaInput" value="business, biz, founder" class="form-control form-control-lg form-control-solid mb-3" type="text" name="handle" autocomplete="off" />
-															<!--end::Input-->
-															<div class="text-muted text-left">Example: business, biz, founder</div>
+															<div class="fv-row mb-10">
+																<!--begin::Wrapper-->
+																<div class="d-flex flex-stack mb-2">
+																	<!--begin::Label-->
+																	<label class="form-label fw-bold text-dark fs-6 mb-0">Activity<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="AISMA will ignore profiles that have not shown any activity during the specified period"></i></label>
+																	<!--end::Label-->
+																</div>
+																<!--end::Wrapper-->
+																<!--begin::Input-->
+																<input value="7 days" class="form-control form-control-lg form-control-solid mb-3" type="text" disabled />
+																<!--end::Input-->
+																<div class="text-muted text-left">It cannot be changed at the moment</div>
+															</div>
+															<div class="fv-row mb-10">
+																<!--begin::Wrapper-->
+																<div class="d-flex flex-stack mb-2">
+																	<!--begin::Label-->
+																	<label class="form-label fw-bold text-dark fs-6 mb-0">Direct messages<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="AISMA will ignore profiles that have disabled the ability to receive direct messages"></i></label>
+																	<!--end::Label-->
+																</div>
+																<!--end::Wrapper-->
+																<!--begin::Input-->
+																<input value="Enabled" class="form-control form-control-lg form-control-solid mb-3" type="text" disabled />
+																<!--end::Input-->
+																<div class="text-muted text-left">It cannot be changed at the moment</div>
+															</div>
 														</div>
 														<!--end::Input group-->
 														<!--begin::Actions-->
@@ -451,43 +498,16 @@
 		        console.error("Record not found");
 		      } else {
 		        const record = data;
+						console.log('emailRecordId:' + data);
 
 		        if (!record.fields.TwitterHandle) {
 		          document.getElementById('handle_false').style.display = 'block';
 
-		          const matrix_criteria = record.fields.Criteria;
-		          const matrixData_criteria = {};
-
-		          // Parsing the matrix string and storing values in an object
-		          if (record.fields.matrix_criteria) {
-		            matrix_criteria.split(",").forEach((item) => {
-		              const [day, value] = item.split(":");
-		              matrixData_criteria[day] = value;
-		            });
-		          }
 		        } else {
 		          document.getElementById('dashboard_handle').textContent = ' @' + record.fields.TwitterHandle;
 		          document.getElementById('handle_true').style.display = 'block';
 		          document.getElementById('kt_delete').style.display = 'block';
-
-		          document.getElementById('handleInput').value = record.fields.TwitterHandle;
-
-							const twitterHandles = record.fields.TwitterContacts.split(',');
-							const twitterCollection = document.getElementById('twitter_collection');
-
-							twitterHandles.forEach(handle => {
-							  const link = document.createElement('a');
-							  link.href = `https://twitter.com/${handle}`;
-							  link.textContent = handle;
-							  link.target = "_blank";
-
-							  const paragraph = document.createElement('p');
-							  paragraph.appendChild(link);
-
-							  twitterCollection.appendChild(paragraph);
-							});
-
-
+							document.getElementById('kt_submit').style.display = 'block';
 
 							if (!record.fields.Criteria){
 								document.getElementById('criteriaInput').value = "business, biz, founder";
@@ -496,9 +516,37 @@
 							}
 							window.localStorage.setItem('criteria', record.fields.Criteria);
 
-		        }
+		          document.getElementById('handleInput').value = record.fields.TwitterHandle;
 
-						document.getElementById('kt_submit').style.display = 'block';
+							const twitterHandles = record.fields.TwitterContacts.split(',');
+							const twitterCollection = document.getElementById('twitter_collection');
+
+							twitterHandles.forEach(handle => {
+							  const link = document.createElement('a');
+							  link.href = `https://twitter.com/${handle}`+'?dm';
+							  link.textContent = handle;
+							  link.target = "_blank";
+
+							  const paragraph = document.createElement('p');
+							  paragraph.appendChild(link);
+
+							  twitterCollection.appendChild(paragraph);
+
+							  // Add the SVG icon after each link
+							  const svgIcon = document.createElement('span');
+							  svgIcon.className = 'svg-icon svg-icon-4 svg-icon-gray-800 ms-1';
+							  svgIcon.innerHTML = `
+							    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							      <path opacity="0.3" d="M4.7 17.3V7.7C4.7 6.59543 5.59543 5.7 6.7 5.7H9.8C10.2694 5.7 10.65 5.31944 10.65 4.85C10.65 4.38056 10.2694 4 9.8 4H5C3.89543 4 3 4.89543 3 6V19C3 20.1046 3.89543 21 5 21H18C19.1046 21 20 20.1046 20 19V14.2C20 13.7306 19.6194 13.35 19.15 13.35C18.6806 13.35 18.3 13.7306 18.3 14.2V17.3C18.3 18.4046 17.4046 19.3 16.3 19.3H6.7C5.59543 19.3 4.7 18.4046 4.7 17.3Z" fill="currentColor"></path>
+							      <rect x="21.9497" y="3.46448" width="13" height="2" rx="1" transform="rotate(135 21.9497 3.46448)" fill="currentColor"></rect>
+							      <path d="M19.8284 4.97161L19.8284 9.93937C19.8284 10.5252 20.3033 11 20.8891 11C21.4749 11 21.9497 10.5252 21.9497 9.93937L21.9497 3.05029C21.9497 2.498 21.502 2.05028 20.9497 2.05028L14.0607 2.05027C13.4749 2.05027 13 2.52514 13 3.11094C13 3.69673 13.4749 4.17161 14.0607 4.17161L19.0284 4.17161C19.4702 4.17161 19.8284 4.52978 19.8284 4.97161Z" fill="currentColor"></path>
+							    </svg>
+							  `;
+
+							  paragraph.appendChild(svgIcon);
+							});
+
+		        }
 		      }
 		    })
 		    .catch(err => {
