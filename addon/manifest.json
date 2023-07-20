@@ -3,6 +3,7 @@
   "name": "AI Social Media Assistant",
   "description": "An AI-powered service to 10x enhance your networking building on Twitter",
   "version": "1.1",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnNisNcnUAG1AyghhIvGCZYYA/gvS/ZTNSeLVf5JfV7eU/1l7trMZICZf3hLPMbbqTMeUAhPeZryY/rQtgaG1JvCb4vvgBPI4S70dVr6ahlp71tVgBrhS+aXv0MIZ4b6BxRJ/DYmY0sryFflZ0/fiu4F47BIey6rjwiKNJUnFcnMc/XJ/KCEiO8n00HRw4R5dFw5O5YZ1g5cPVO5SwDrhIS+pUMFQcK2PxK73KpbUpe5YHyfnfOMKcDVQFl/3UGmzFY5IafcOms96mFdf2/k12tn+o2QV2jYfolpgVIhn6D4SjguGZngiIuzHl5bujvswXqA1xkX3i5tIkLALXYFm5QIDAQAB",
   "externally_connectable": {
     "ids": ["aoanplmcijnbbcnnllmeagbkdhkkdkep"],
     "matches": ["*://127.0.0.1/*", "*://aisma.wr.io/*"],

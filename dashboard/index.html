@@ -585,8 +585,8 @@
 		    } else {
 					const criteria = document.getElementById('criteriaInput').value;
 					const emailRecordId = localStorage.getItem("emailRecordId");
-console.log('emailRecordId!:', emailRecordId);
-					const extensionId = 'aoanplmcijnbbcnnllmeagbkdhkkdkep';
+
+					const extensionId = 'dpgjbdcoafeigakkgmoakjficeclpdki';
 
 					// After the user logs in and you have the criteria value and emailRecordId
 					chrome.runtime.sendMessage(extensionId, { criteria, emailRecordId }, function(response) {
@@ -609,11 +609,11 @@ console.log('emailRecordId!:', emailRecordId);
 					  if (!criteriaResponse.ok) {
 					    console.error('Failed to store criteria');
 					  } else {
-					    location.reload();
+					    //location.reload();
 					  }
 					} catch (error) {
 					  console.error('Error:', error);
-					  location.reload();
+					  //location.reload();
 					}
 
 		    }
