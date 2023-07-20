@@ -11,8 +11,7 @@
   "permissions": [
     "tabs",
     "storage",
-    "activeTab",
-    "runtime.sendMessage"
+    "activeTab"
   ],
   "content_scripts": [
     {

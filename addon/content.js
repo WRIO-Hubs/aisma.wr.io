@@ -6,28 +6,43 @@ function checkMatchWords(mergedText, link, matchWords) {
   const matchedWords = matchWords.filter((word) => mergedText.toLowerCase().includes(word.toLowerCase()));
 
   if (matchedWords.length > 0 && hoveredElement) {
-    hoveredElement.style.border = '1px solid green';
-    hoveredElement.style.backgroundColor = 'lightgreen';
+    const existingScanLink = hoveredElement.querySelector('[data-testid="scanLink"]');
 
-    const scanLink = document.createElement('a');
-    scanLink.setAttribute('href', link);
-    scanLink.innerText = 'Scan';
-    scanLink.style.margin = '4px';
+    if (!existingScanLink) {
+      hoveredElement.style.border = '1px solid green';
+      hoveredElement.style.backgroundColor = 'lightgreen';
 
-    const targetElement = hoveredElement.querySelector('.css-1dbjc4n.r-1joea0r > .css-1dbjc4n.r-1awozwy.r-6koalj.r-18u37iz');
-    if (targetElement) {
-      const parentElement = targetElement.parentNode;
-      parentElement.insertBefore(scanLink, targetElement);
+      const scanLink = document.createElement('a');
+      scanLink.setAttribute('href', link);
+      scanLink.innerText = 'Scan';
+      // Apply the updated styles
+      scanLink.style.margin = '4px';
+      scanLink.style.padding = '0 16px';
+      scanLink.style.color = 'white';
+      scanLink.style.fontSize = '14px';
+      scanLink.style.textDecoration = 'none';
+      scanLink.style.fontWeight = 'bold';
+      scanLink.style.backgroundColor = 'rgb(15, 20, 25)';
+      scanLink.style.minHeight = '32px';
+      scanLink.style.borderRadius = '9999px';
+      // Add the CSS classes
+      scanLink.classList.add('css-901oao', 'r-1awozwy', 'r-jwli3a', 'r-6koalj', 'r-18u37iz', 'r-16y2uox', 'r-37j5jr', 'r-a023e6', 'r-b88u0q', 'r-1777fci', 'r-rjixqe', 'r-bcqeeo', 'r-q4m81j', 'r-qvutc0');
+      scanLink.setAttribute('data-testid', 'scanLink');
+
+      const targetElement = hoveredElement.querySelector('.css-1dbjc4n.r-1joea0r > .css-1dbjc4n.r-1awozwy.r-6koalj.r-18u37iz');
+      if (targetElement) {
+        const parentElement = targetElement.parentNode;
+        parentElement.insertBefore(scanLink, targetElement);
+      }
+
+      scanLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        chrome.runtime.sendMessage({ openScanUrl: link });
+      });
     }
-
-    scanLink.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      chrome.runtime.sendMessage({ openScanUrl: link });
-    });
   }
 }
-
 
 function setHoveredElement(element) {
   if (hoveredElement) {
