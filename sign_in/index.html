@@ -163,65 +163,70 @@
 		<script src="https://bizcom.wr.io/assets/js/custom/authentication/sign-in/general.js"></script>-->
 
 		<script>
-		  function checkCredentials(email, password) {
-		    return fetch(`https://aisma-signin.wrio.workers.dev/?email=${email}&password=${password}`)
-		      .then(response => response.text())
-		      .then(data => {
-		        if (data !== 'NOT_FOUND') {
-		          return data; // Return the ID of the matching record
-		        } else {
-		          return null; // No matching record found
-		        }
-		      });
-		  }
+		function checkCredentials(email, password) {
+			return fetch(`https://aisma-signin.wrio.workers.dev/?email=${email}&password=${password}`)
+				.then(response => response.text())
+				.then(data => {
+					if (data !== 'NOT_FOUND') {
+						return data; // Return the ID of the matching record
+					} else {
+						return null; // No matching record found
+					}
+				});
+			}
 
-		  function handleFormSubmit(event) {
-		    event.preventDefault();
+			function handleFormSubmit(event) {
+			event.preventDefault();
 
-				const submitButton = document.getElementById('kt_submit');
-				const indicatorLabel = submitButton.querySelector('.indicator-label');
-				const indicatorProgress = submitButton.querySelector('.indicator-progress');
-				// Change the text to "Saving" and show the spinner
-				indicatorLabel.textContent = '';
-				indicatorProgress.style.display = 'inline-block';
+			const submitButton = document.getElementById('kt_submit');
+			const indicatorLabel = submitButton.querySelector('.indicator-label');
+			const indicatorProgress = submitButton.querySelector('.indicator-progress');
+			// Change the text to "Saving" and show the spinner
+			indicatorLabel.textContent = '';
+			indicatorProgress.style.display = 'inline-block';
 
-		    const emailInput = document.getElementById('kt_sign_in_form').elements['email'];
-		    const passwordInput = document.getElementById('kt_sign_in_form').elements['password'];
+			const emailInput = document.getElementById('kt_sign_in_form').elements['email'];
+			const passwordInput = document.getElementById('kt_sign_in_form').elements['password'];
 
-		    const email = emailInput.value;
-		    const password = passwordInput.value;
+			const email = emailInput.value;
+			const password = passwordInput.value;
 
-		    checkCredentials(email, password)
-		      .then(recordId => {
-		        if (recordId) {
-		          // Record ID found, store it in localStorage
-		          window.localStorage.setItem('emailRecordId', recordId);
-		          window.location.href = 'dashboard';
-		        } else {
-		          // No matching record found, show an error message
-		          const errorMessage = document.getElementById('error-message');
-		          errorMessage.style.display = 'block';
-							indicatorLabel.textContent = 'Submit';
-							indicatorProgress.style.display = 'none';
+			checkCredentials(email, password)
+				.then(data => {
+					if (data) {
+						// Split the data into recordId and extensionId
+						const [recordId, extensionId] = data.split(',');
+						// Store them in localStorage
+						window.localStorage.setItem('emailRecordId', recordId);
+						window.localStorage.setItem('extensionId', extensionId); // Store the extensionId
+						// Redirect to the dashboard page
+						window.location.href = 'dashboard';
+					} else {
+						// No matching record found, show an error message
+						const errorMessage = document.getElementById('error-message');
+						errorMessage.style.display = 'block';
+						indicatorLabel.textContent = 'Submit';
+						indicatorProgress.style.display = 'none';
 
-		          // Fade away the error message after 2 seconds
-		          setTimeout(() => {
-		            errorMessage.style.opacity = '0';
-		            setTimeout(() => {
-		              errorMessage.style.display = 'none';
-		              errorMessage.style.opacity = '1';
-		            }, 500);
-		          }, 2000);
-		        }
-		      })
-		      .catch(err => {
-		        console.error('Error:', err);
-		      });
-		  }
+						// Fade away the error message after 2 seconds
+						setTimeout(() => {
+							errorMessage.style.opacity = '0';
+							setTimeout(() => {
+								errorMessage.style.display = 'none';
+								errorMessage.style.opacity = '1';
+							}, 500);
+						}, 2000);
+					}
+				})
+				.catch(err => {
+					console.error('Error:', err);
+				});
+			}
 
-		  // Add event listener to form submission
-		  const signInForm = document.getElementById('kt_sign_in_form');
-		  signInForm.addEventListener('submit', handleFormSubmit);
+			// Add event listener to form submission
+			const signInForm = document.getElementById('kt_sign_in_form');
+			signInForm.addEventListener('submit', handleFormSubmit);
+
 		</script>
 
 		<!--end::Custom Javascript-->

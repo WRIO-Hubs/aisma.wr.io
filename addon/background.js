@@ -4,22 +4,32 @@ self.addEventListener('fetch', (event) => {
 });
 
 chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
-  if (request.criteria && request.emailRecordId) {
+  if (request.criteria && request.message_greetings && request.message_body && request.message_regards && request.emailRecordId) {
     const criteria = request.criteria;
+    const message_greetings = request.message_greetings;
+    const message_body = request.message_body;
+    const message_regards = request.message_regards;
     const emailRecordId = request.emailRecordId;
 
-    // Store the criteria and emailRecordId in the extension's storage or perform any other required action
+    // Store the data in the extension's storage or perform any other required action
     console.log('Criteria received from the webpage:', criteria);
+    console.log('message_greetings received from the webpage:', message_greetings);
+    console.log('message_body received from the webpage:', message_body);
+    console.log('message_regards received from the webpage:', message_regards);
     console.log('emailRecordId received from the webpage:', emailRecordId);
 
-    // Store the criteria and emailRecordId in the extension's storage
-    chrome.storage.local.set({ criteria: criteria, emailRecordId: emailRecordId }, function() {
-      //console.log('Criteria and emailRecordId stored in storage:', criteria, emailRecordId);
+    // Format the data as needed (replace newlines with '\\n')
+    const formattedMessage = `[[${message_greetings}][${message_body.replace(/\n/g, '\\n')}][${message_regards.replace(/\n/g, '\\n')}]]`;
+
+    // Store the data in the extension's storage
+    chrome.storage.local.set({ criteria: criteria, twitterMessage: formattedMessage, emailRecordId: emailRecordId }, function() {
+      console.log('Data stored in storage:', criteria, formattedMessage, emailRecordId);
       // Send a response back to the webpage
       sendResponse({ success: true });
     });
   }
 });
+
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.openScanUrl) {
@@ -49,9 +59,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 // Function to open the dashboard URL in a new tab
 function openDashboard() {
-  const dashboardUrl = 'https://aisma.wr.io/sign_in/';
-
-  chrome.tabs.create({ url: dashboardUrl, active: true }, function (tab) {});
+  //const dashboardUrl = 'https://aisma.wr.io/sign_in/';
+  //chrome.tabs.create({ url: dashboardUrl, active: true }, function (tab) {});
 }
 
 // Function to retrieve Twitter contacts and update the badge count

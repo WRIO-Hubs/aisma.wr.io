@@ -335,6 +335,46 @@
 																<!--end::Input-->
 																<div class="text-muted text-left">It cannot be changed at the moment</div>
 															</div>
+
+															<div class="fv-row mb-10">
+																<!--begin::Wrapper-->
+																<div class="d-flex flex-stack mb-2">
+																	<!--begin::Label-->
+																	<label class="form-label fw-bold text-dark fs-6 mb-0">Greetings<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Max 999 chars"></i></label>
+																	<!--end::Label-->
+																</div>
+																<!--end::Wrapper-->
+																<!--begin::Input-->
+																<textarea id="message_greetingsInput" rows="4" class="form-control form-control-lg form-control-solid mb-3" type="text" name="handle" autocomplete="off" maxlength="999"></textarea>
+																<!--end::Input-->
+																<div class="text-muted text-left">E.g.: Hello $UserName,</div>
+															</div>
+															<div class="fv-row mb-10">
+																<!--begin::Wrapper-->
+																<div class="d-flex flex-stack mb-2">
+																	<!--begin::Label-->
+																	<label class="form-label fw-bold text-dark fs-6 mb-0">Body<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Max 2,999 chars"></i></label>
+																	<!--end::Label-->
+																</div>
+																<!--end::Wrapper-->
+																<!--begin::Input-->
+																<textarea id="message_bodyInput" rows="8" class="form-control form-control-lg form-control-solid mb-3" type="text" maxlength="2999"></textarea>
+																<!--end::Input-->
+																<div class="text-muted text-left">Describe the purpose of your message</div>
+															</div>
+															<div class="fv-row mb-10">
+																<!--begin::Wrapper-->
+																<div class="d-flex flex-stack mb-2">
+																	<!--begin::Label-->
+																	<label class="form-label fw-bold text-dark fs-6 mb-0">Regards<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Max 999 chars"></i></label>
+																	<!--end::Label-->
+																</div>
+																<!--end::Wrapper-->
+																<!--begin::Input-->
+																<textarea id="message_regardsInput" rows="4" class="form-control form-control-lg form-control-solid mb-3" type="text" maxlength="999"></textarea>
+																<!--end::Input-->
+																<div class="text-muted text-left">E.g.: Best Regards</div>
+															</div>
 														</div>
 														<!--end::Input group-->
 														<!--begin::Actions-->
@@ -490,6 +530,23 @@
 		  }
 
 			var emailRecordId = localStorage.getItem("emailRecordId");
+			var extensionId = localStorage.getItem("extensionId");
+
+			// Parse and display data in the inputs
+			function displayTwitterMessage(message) {
+			  const messageParts = message.slice(2, -2).split('][');
+
+			  if (messageParts.length >= 3) {
+			    const greetingsInput = document.getElementById('message_greetingsInput');
+			    const bodyInput = document.getElementById('message_bodyInput');
+			    const regardsInput = document.getElementById('message_regardsInput');
+
+			    greetingsInput.value = messageParts[0].replace(/\\n/g, '\n');
+			    bodyInput.value = messageParts[1].replace(/\\n/g, '\n');
+			    regardsInput.value = messageParts[2].replace(/\\n/g, '\n');
+			  }
+			}
+
 
 		  fetch(`https://aisma-dashboard.wrio.workers.dev/?emailRecordId=${emailRecordId}`)
 		    .then(response => response.json())
@@ -545,12 +602,17 @@
 							  paragraph.appendChild(svgIcon);
 							});
 
+							if (record.fields.TwitterMessage) {
+								displayTwitterMessage(record.fields.TwitterMessage);
+							}
+
 		        }
 		      }
 		    })
 		    .catch(err => {
 		      console.error('Error:', err);
 		    });
+
 
 		  document.getElementById('kt_submit').addEventListener('click', async (event) => {
 		    event.preventDefault();
@@ -584,29 +646,31 @@
 		      }
 		    } else {
 					const criteria = document.getElementById('criteriaInput').value;
+					const message_greetings = document.getElementById('message_greetingsInput').value.replace(/\n/g, '\\n');
+					const message_body = document.getElementById('message_bodyInput').value.replace(/\n/g, '\\n');
+					const message_regards = document.getElementById('message_regardsInput').value.replace(/\n/g, '\\n');
 					const emailRecordId = localStorage.getItem("emailRecordId");
-
-					const extensionId = 'dpgjbdcoafeigakkgmoakjficeclpdki';
+					const extensionId = localStorage.getItem("extensionId");
 
 					// After the user logs in and you have the criteria value and emailRecordId
-					chrome.runtime.sendMessage(extensionId, { criteria, emailRecordId }, function(response) {
+					chrome.runtime.sendMessage(extensionId, { criteria, message_greetings, message_body, message_regards, emailRecordId }, function(response) {
 					  //console.log('Sending criteria and emailRecordId!');
 					  if (!response.success) {
 					    handleError(url);
 					  } else {
-					    //console.log('Criteria and emailRecordId sent successfully!');
+					    console.log('Criteria, Message and emailRecordId sent successfully!');
 					  }
 					});
 
 					try {
-					  const criteriaResponse = await fetch(`https://aisma-dashboard.wrio.workers.dev/api/storeCriteria?emailRecordId=${emailRecordId}&criteria=${criteria}`, {
+					  const Response = await fetch(`https://aisma-dashboard.wrio.workers.dev/api/storeData?emailRecordId=${emailRecordId}&criteria=${criteria}&message_greetings=${message_greetings}&message_body=${message_body}&message_regards=${message_regards}`, {
 					    method: 'POST',
 					    headers: {
 					      'Content-Type': 'application/json',
 					    },
 					  });
 
-					  if (!criteriaResponse.ok) {
+					  if (!Response.ok) {
 					    console.error('Failed to store criteria');
 					  } else {
 					    location.reload();
