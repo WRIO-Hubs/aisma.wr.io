@@ -5,10 +5,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Create an array of menu items
   const menuItems = [
     { title: 'Dashboard', link: '/dashboard' },
-    { title: 'Analitics', link: '/dashboard/analitics', disabled: true },
-    { title: 'AI features', link: '/dashboard/ai', disabled: true },
-    { title: 'Profile', link: '/dashboard/profile', disabled: true },
-    { title: 'Settings', link: '/dashboard/settings', disabled: true }
+    { title: 'Messages', link: '/messages' },
+    { title: 'Contacts', link: '/contacts' },
+    { title: 'Analitics', link: '/analitics', disabled: true },
+    { title: 'Profile', link: '/profile', disabled: true },
+    { title: 'Settings', link: '/settings', disabled: true }
   ];
 
   // Get the current path without the trailing slash

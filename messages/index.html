@@ -10,7 +10,7 @@
 			gtag('js', new Date());
 			gtag('config', 'G-YXB9MX25F6');
 		</script>
-		<title>AISMA &bull; Dashboard</title>
+		<title>AISMA &bull; Messages</title>
 		<meta charset="utf-8" />
 		<meta name="description" content="Dashboard" />
 		<meta name="keywords" content="Dashboard" />
@@ -72,7 +72,7 @@
 							<!--begin::Page title-->
 							<div data-kt-swapper="true" data-kt-swapper-mode="{default: 'prepend', lg: 'prepend'}" data-kt-swapper-parent="{default: '#kt_app_content_container', lg: '#kt_app_header_wrapper'}" class="page-title d-flex flex-column justify-content-center flex-wrap me-3 mb-5 mb-lg-0">
 								<!--begin::Title-->
-								<h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Dashboard
+								<h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Messages
 								<!--begin::Description-->
 								<span class="page-desc text-gray-400 fs-7 fw-semibold pt-1">Experimental version</span>
 								<!--end::Description--></h1>
@@ -230,11 +230,6 @@
 					<!--end::sidebar-->
 
 
-
-
-
-
-
 					<!--begin::Main-->
 					<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
 						<!--begin::Content wrapper-->
@@ -243,104 +238,74 @@
 							<div id="kt_app_content" class="app-content flex-column-fluid">
 								<!--begin::Content container-->
 								<div id="kt_app_content_container" class="app-container container-fluid">
-										<div class="notice d-flex bg-default rounded border-default border border-dashed mb-12 p-6">
-											<!--begin::Icon-->
-											<!--begin::Svg Icon | path: icons/duotune/general/gen044.svg-->
-											<span class="svg-icon svg-icon-2tx svg-icon-default me-4">
-												<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor"></rect>
-													<rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor"></rect>
-													<rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor"></rect>
-												</svg>
-											</span>
-											<!--end::Svg Icon-->
-											<!--end::Icon-->
-											<!--begin::Wrapper-->
-											<div class="d-flex flex-stack flex-grow-1">
-												<!--begin::Content-->
-												<div class="fw-semibold">
-													<h4 class="text-gray-900 fw-bold">The trial period is not active</h4>
-													<div class="fs-6 text-gray-700">Enjoy the free version of the product!</div>
-												</div>
-												<!--end::Content-->
-											</div>
-											<!--end::Wrapper-->
-										</div>
 									<!--begin::Card-->
 									<div class="card">
 										<!--begin::Card body-->
 										<div class="card-body p-0">
 											<!--begin::Wrapper-->
 											<div class="card-px text-center py-20 my-10">
-												<!--begin::Title-->
-												<h2 class="fs-2x fw-bold mb-10">Hi<span id="dashboard_handle"></span>!<br>Welcome to Alpha public testing</h2>
-												<!--end::Title-->
 												<!--begin::Wrapper-->
 												<div class="w-lg-500px p-10 p-lg-15 mx-auto">
 													<!--begin::Form-->
 													<form class="form w-100" novalidate="novalidate" id="kt_form" action="#">
 														<!--begin::Input group-->
-														<div id="handle_false" class="fv-row mb-10" style="display:none">
+														<div class="fv-row mb-10">
 															<!--begin::Wrapper-->
 															<div class="d-flex flex-stack mb-2">
 																<!--begin::Label-->
-																<label class="form-label fw-bold text-dark fs-6 mb-0">Enter your Twitter handle</label>
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Greetings<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Max 999 chars"></i></label>
 																<!--end::Label-->
 															</div>
 															<!--end::Wrapper-->
 															<!--begin::Input-->
-															<input id="handleInput" class="form-control form-control-lg form-control-solid mb-3" type="text" name="handle" autocomplete="off" />
+															<textarea id="message_greetingsInput" rows="4" class="form-control form-control-lg form-control-solid mb-3" type="text" name="handle" autocomplete="off" maxlength="999"></textarea>
 															<!--end::Input-->
-															<div class="text-muted text-left">Note: you will not be able to change it later</div>
+															<div class="text-muted text-left">E.g.: Hello $UserName,</div>
 														</div>
-														<!--end::Input group-->
-														<!--begin::Input group-->
-														<div id="handle_true" style="display:none">
-															<div class="fv-row mb-10">
-																<!--begin::Wrapper-->
-																<div class="d-flex flex-stack mb-2">
-																	<!--begin::Label-->
-																	<label class="form-label fw-bold text-dark fs-6 mb-0">Criteria<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="AISMA will highlight all Twitter profiles where it finds at least one of the specified words or letter combinations. It is not case-sensitive"></i></label>
-																	<!--end::Label-->
-																</div>
-																<!--end::Wrapper-->
-																<!--begin::Input-->
-																<input id="criteriaInput" class="form-control form-control-lg form-control-solid mb-3" type="text" name="handle" autocomplete="off" />
-																<!--end::Input-->
-																<div class="text-muted text-left">E.g.: business, biz, founder</div>
+														<div class="fv-row mb-10">
+															<!--begin::Wrapper-->
+															<div class="d-flex flex-stack mb-2">
+																<!--begin::Label-->
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Body<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Max 2,999 chars"></i></label>
+																<!--end::Label-->
 															</div>
-															<div class="fv-row mb-10">
-																<!--begin::Wrapper-->
-																<div class="d-flex flex-stack mb-2">
-																	<!--begin::Label-->
-																	<label class="form-label fw-bold text-dark fs-6 mb-0">Activity<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="AISMA will ignore profiles that have not shown any activity during the specified period"></i></label>
-																	<!--end::Label-->
-																</div>
-																<!--end::Wrapper-->
-																<!--begin::Input-->
-																<input value="7 days" class="form-control form-control-lg form-control-solid mb-3" type="text" disabled />
-																<!--end::Input-->
-																<div class="text-muted text-left">It cannot be changed at the moment</div>
+															<!--end::Wrapper-->
+															<!--begin::Input-->
+															<textarea id="message_bodyInput" rows="8" class="form-control form-control-lg form-control-solid mb-3" type="text" maxlength="2999"></textarea>
+															<!--end::Input-->
+															<div class="text-muted text-left">Describe the purpose of your message</div>
+														</div>
+														<div class="fv-row mb-10">
+															<!--begin::Wrapper-->
+															<div class="d-flex flex-stack mb-2">
+																<!--begin::Label-->
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Regards<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Max 999 chars"></i></label>
+																<!--end::Label-->
 															</div>
-															<div class="fv-row mb-10">
-																<!--begin::Wrapper-->
-																<div class="d-flex flex-stack mb-2">
-																	<!--begin::Label-->
-																	<label class="form-label fw-bold text-dark fs-6 mb-0">Direct messages<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="AISMA will ignore profiles that have disabled the ability to receive direct messages"></i></label>
-																	<!--end::Label-->
-																</div>
-																<!--end::Wrapper-->
-																<!--begin::Input-->
-																<input value="Enabled" class="form-control form-control-lg form-control-solid mb-3" type="text" disabled />
-																<!--end::Input-->
-																<div class="text-muted text-left">It cannot be changed at the moment</div>
+															<!--end::Wrapper-->
+															<!--begin::Input-->
+															<textarea id="message_regardsInput" rows="4" class="form-control form-control-lg form-control-solid mb-3" type="text" maxlength="999"></textarea>
+															<!--end::Input-->
+															<div class="text-muted text-left">E.g.: Best Regards</div>
+														</div>
+														<div class="fv-row mb-10" style="display:none">
+															<!--begin::Wrapper-->
+															<div class="d-flex flex-stack mb-2">
+																<!--begin::Label-->
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Footer<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Can be disabled in paid versions"></i></label>
+																<!--end::Label-->
 															</div>
+															<!--end::Wrapper-->
+															<!--begin::Input-->
+															<input value="Sent by AISMA.wr(dot)io" class="form-control form-control-lg form-control-solid mb-3" type="text" disabled />
+															<!--end::Input-->
+															<div class="text-muted text-left">The footer text is automatically added to each message</div>
 														</div>
 														<!--end::Input group-->
 														<!--begin::Actions-->
 														<div class="text-center">
 															<!--begin::Submit button-->
-															<button id="kt_submit" style="display:none" type="submit" class="btn btn-lg btn-primary w-100 mb-5">
+															<button id="kt_submit" type="submit" class="btn btn-lg btn-primary w-100 mb-5">
 																<span class="indicator-label">Submit</span>
 																<span class="indicator-progress">Please wait...
 																<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
@@ -354,11 +319,6 @@
 												<!--end::Wrapper-->
 											</div>
 											<!--end::Wrapper-->
-											<!--begin::Illustration-->
-											<div class="text-center px-4">
-												<img class="mw-100 mh-300px" alt="" src="https://bizcom.wr.io/assets/media/illustrations/sketchy-1/5.png" />
-											</div>
-											<!--end::Illustration-->
 										</div>
 										<!--end::Card body-->
 									</div>
@@ -446,25 +406,6 @@
 
 		<!-- AIRTABLE -->
 		<script>
-		  const handleInput = document.getElementById('handleInput');
-
-		  handleInput.addEventListener('input', (event) => {
-		    let inputValue = event.target.value;
-
-		    // Remove all characters that are not letters, numbers, or underscores
-		    inputValue = inputValue.replace(/[^a-zA-Z0-9_]/g, '');
-
-		    // Add "@" symbol at the beginning if it's not already there
-		    if (!inputValue.startsWith('@')) {
-		      inputValue = `@${inputValue}`;
-		    }
-
-		    // Update the input value
-		    handleInput.value = inputValue;
-		  });
-
-		  // Add "@" symbol on page load
-		  handleInput.value = '@';
 
 		  if (localStorage.getItem("emailRecordId") == null) {
 		    window.location.href = "/sign_in";
@@ -473,32 +414,31 @@
 			var emailRecordId = localStorage.getItem("emailRecordId");
 			var extensionId = localStorage.getItem("extensionId");
 
+			// Parse and display data in the inputs
+			function displayTwitterMessage(message) {
+			  const messageParts = message.slice(2, -2).split('][');
 
-		  fetch(`https://aisma-dashboard.wrio.workers.dev/?emailRecordId=${emailRecordId}`)
+			  if (messageParts.length >= 3) {
+			    const greetingsInput = document.getElementById('message_greetingsInput');
+			    const bodyInput = document.getElementById('message_bodyInput');
+			    const regardsInput = document.getElementById('message_regardsInput');
+
+			    greetingsInput.value = messageParts[0].replace(/\\n/g, '\n');
+			    bodyInput.value = messageParts[1].replace(/\\n/g, '\n');
+			    regardsInput.value = messageParts[2].replace(/\\n/g, '\n');
+			  }
+			}
+
+		  fetch(`https://aisma-message.wrio.workers.dev/?emailRecordId=${emailRecordId}`)
 		    .then(response => response.json())
 		    .then(data => {
 		      if (data.error && data.error === 'NOT_FOUND') {
 		        console.error("Record not found");
 		      } else {
 		        const record = data;
-
-		        if (!record.fields.TwitterHandle) {
-		          document.getElementById('handle_false').style.display = 'block';
-
-		        } else {
-		          document.getElementById('dashboard_handle').textContent = ' @' + record.fields.TwitterHandle;
-		          document.getElementById('handle_true').style.display = 'block';
-							document.getElementById('kt_submit').style.display = 'block';
-
-							if (!record.fields.Criteria){
-								document.getElementById('criteriaInput').value = "business, biz, founder";
-							} else {
-		          	document.getElementById('criteriaInput').value = record.fields.Criteria;
-							}
-							window.localStorage.setItem('criteria', record.fields.Criteria);
-
-		          document.getElementById('handleInput').value = record.fields.TwitterHandle;
-		        }
+						if (record.fields.TwitterMessage) {
+							displayTwitterMessage(record.fields.TwitterMessage);
+						}
 		      }
 		    })
 		    .catch(err => {
@@ -516,60 +456,37 @@
 				indicatorLabel.textContent = 'Saving. ';
 				indicatorProgress.style.display = 'inline-block';
 
-		    const emailRecordId = localStorage.getItem("emailRecordId");
+				const message_greetings = document.getElementById('message_greetingsInput').value.replace(/\n/g, '\\n');
+				const message_body = document.getElementById('message_bodyInput').value.replace(/\n/g, '\\n');
+				const message_regards = document.getElementById('message_regardsInput').value.replace(/\n/g, '\\n');
+				const extensionId = localStorage.getItem("extensionId");
 
-		    if (document.getElementById('handle_false').style.display === 'block') {
+				// After the user logs in and you have the message value and emailRecordId
+				chrome.runtime.sendMessage(extensionId, { message_greetings, message_body, message_regards }, function(response) {
+				  if (!response.success) {
+				    handleError(url);
+				  } else {
+				    console.log('Message and emailRecordId sent successfully!');
+				  }
+				});
 
-		      var twitterHandle = document.getElementById('handleInput').value;
+				try {
+				  const Response = await fetch(`https://aisma-message.wrio.workers.dev/api/storeData?emailRecordId=${emailRecordId}&message_greetings=${message_greetings}&message_body=${message_body}&message_regards=${message_regards}`, {
+				    method: 'POST',
+				    headers: {
+				      'Content-Type': 'application/json',
+				    },
+				  });
 
-		      twitterHandle = twitterHandle.replace(/^@/, ''); // Remove "@" symbol from the beginning using regular expression
-
-		      try {
-		        const response = await fetch(`https://aisma-dashboard.wrio.workers.dev/api/updateTwitterHandle?emailRecordId=${emailRecordId}&twitterHandle=${twitterHandle}`, {
-		          method: 'POST',
-		          headers: {
-		            'Content-Type': 'application/json',
-		          },
-		        });
-						location.reload();
-		      } catch (error) {
-		        console.error('Error:', error);
-						location.reload();
-		      }
-		    } else {
-					const criteria = document.getElementById('criteriaInput').value;
-					const emailRecordId = localStorage.getItem("emailRecordId");
-					const extensionId = localStorage.getItem("extensionId");
-
-					// After the user logs in and you have the criteria value and emailRecordId
-					chrome.runtime.sendMessage(extensionId, { criteria, emailRecordId }, function(response) {
-					  //console.log('Sending criteria and emailRecordId!');
-					  if (!response.success) {
-					    handleError(url);
-					  } else {
-					    console.log('Criteria and emailRecordId sent successfully!');
-					  }
-					});
-
-					try {
-					  const Response = await fetch(`https://aisma-dashboard.wrio.workers.dev/api/storeData?emailRecordId=${emailRecordId}&criteria=${criteria}`, {
-					    method: 'POST',
-					    headers: {
-					      'Content-Type': 'application/json',
-					    },
-					  });
-
-					  if (!Response.ok) {
-					    console.error('Failed to store criteria');
-					  } else {
-					    location.reload();
-					  }
-					} catch (error) {
-					  console.error('Error:', error);
-					  location.reload();
-					}
-
-		    }
+				  if (!Response.ok) {
+				    console.error('Failed to store the message');
+				  } else {
+				    location.reload();
+				  }
+				} catch (error) {
+				  console.error('Error:', error);
+				  location.reload();
+				}
 		  });
 
 		</script>
