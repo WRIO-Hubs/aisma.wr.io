@@ -124,3 +124,25 @@ function updateBadgeCount() {
 
 // Call the updateBadgeCount function initially to set the badge count
 updateBadgeCount();
+
+// Function to open the uninstall page
+function openUninstallPage() {
+  const uninstallURL = "https://aisma.wr.io/uninstall/";
+  chrome.runtime.setUninstallURL(uninstallURL).then(() => {
+    console.log("Uninstall URL set successfully: ", uninstallURL);
+  }).catch((error) => {
+    console.error("Error setting uninstall URL: ", error);
+  });
+}
+
+chrome.runtime.onInstalled.addListener(function(details) {
+  // Check if the reason for onInstalled is "install"
+  if (details.reason === "install") {
+    const extensionId = chrome.runtime.id;
+    // Open the desired website after the extension is installed
+    chrome.tabs.create({ url: `https://aisma.wr.io/dashboard/?extensionId=${extensionId}` });
+
+    // Set the uninstall URL when the extension is installed
+    openUninstallPage();
+  }
+});

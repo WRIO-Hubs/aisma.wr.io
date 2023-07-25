@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     { title: 'Contacts', link: '/contacts' },
     { title: 'Analitics', link: '/analitics', disabled: true },
     { title: 'Profile', link: '/profile', disabled: true },
-    { title: 'Settings', link: '/settings', disabled: true }
+    { title: 'Settings', link: '/settings' }
   ];
 
   // Get the current path without the trailing slash
