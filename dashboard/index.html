@@ -471,7 +471,7 @@
 			    const urlWithoutExtensionId = window.location.pathname;
 			    history.replaceState({}, document.title, urlWithoutExtensionId);
 			  }
-				
+
 			}
 
 
@@ -502,7 +502,6 @@
 		  }
 
 			var emailRecordId = localStorage.getItem("emailRecordId");
-
 
 		  fetch(`https://aisma-dashboard.wrio.workers.dev/?emailRecordId=${emailRecordId}`)
 		    .then(response => response.json())
