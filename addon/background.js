@@ -14,7 +14,6 @@ chrome.runtime.onMessageExternal.addListener(function(request, sender, sendRespo
 
     // Store the data in the extension's storage
     chrome.storage.local.set({ criteria: criteria, emailRecordId: emailRecordId }, function() {
-      console.log('Data stored in storage:', criteria, emailRecordId);
       // Send a response back to the webpage
       sendResponse({ success: true });
     });
