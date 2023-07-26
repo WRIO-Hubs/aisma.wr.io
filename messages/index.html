@@ -243,30 +243,74 @@
 										<!--begin::Card body-->
 										<div class="card-body p-0">
 											<!--begin::Wrapper-->
-											<div class="card-px text-center py-20 my-10">
+											<div class="card-px text-center py-20 my-10" id="settings">
+												<!--begin::Title-->
+												<h2 class="fs-2x fw-bold mb-10">Message template</h2>
+												<h4 class="fw-semibold">AISMA will randomly take one piece from every part, combine and write it into the clipboard.
+													<br><br>This will prevent Twitter spam-blocking filters.
+													<br><br>You will only need to paste the text in DM and click the send button.</h4>
+												<!--end::Title-->
+											</div>
+											<!--end::Wrapper-->
+											<!--begin::Wrapper-->
+											<div class="card-px text-center my-10">
 												<!--begin::Wrapper-->
 												<div class="w-lg-500px p-10 p-lg-15 mx-auto">
 													<!--begin::Form-->
 													<form class="form w-100" novalidate="novalidate" id="kt_form" action="#">
+														<h2 class="fs-2x fw-bold mb-10">Greetings</h2>
 														<!--begin::Input group-->
 														<div class="fv-row mb-10">
 															<!--begin::Wrapper-->
 															<div class="d-flex flex-stack mb-2">
 																<!--begin::Label-->
-																<label class="form-label fw-bold text-dark fs-6 mb-0">Greetings<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Max 999 chars"></i></label>
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Option 1<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="AISMA automatically takes the first word from the username in the Twitter profile and use as $UserName. Max 999 chars"></i></label>
 																<!--end::Label-->
 															</div>
 															<!--end::Wrapper-->
 															<!--begin::Input-->
-															<textarea id="message_greetingsInput" rows="4" class="form-control form-control-lg form-control-solid mb-3" type="text" name="handle" autocomplete="off" maxlength="999"></textarea>
+															<textarea id="message_greetingsInput" rows="4" class="form-control form-control-lg form-control-solid mb-3" type="text" autocomplete="off" maxlength="999"></textarea>
 															<!--end::Input-->
 															<div class="text-muted text-left">E.g.: Hello $UserName,</div>
 														</div>
+														<!--end::Input group-->
+														<!--begin::Input group-->
 														<div class="fv-row mb-10">
 															<!--begin::Wrapper-->
 															<div class="d-flex flex-stack mb-2">
 																<!--begin::Label-->
-																<label class="form-label fw-bold text-dark fs-6 mb-0">Body<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Max 2,999 chars"></i></label>
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Option 2</label>
+																<!--end::Label-->
+															</div>
+															<!--end::Wrapper-->
+															<!--begin::Input-->
+															<textarea id="message2_greetingsInput" rows="4" class="form-control form-control-lg form-control-solid mb-3" type="text" autocomplete="off" maxlength="999"></textarea>
+															<!--end::Input-->
+															<div class="text-muted text-left">E.g.: Hey there!</div>
+														</div>
+														<!--end::Input group-->
+														<!--begin::Input group-->
+														<div class="fv-row mb-10">
+															<!--begin::Wrapper-->
+															<div class="d-flex flex-stack mb-2">
+																<!--begin::Label-->
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Option 3</label>
+																<!--end::Label-->
+															</div>
+															<!--end::Wrapper-->
+															<!--begin::Input-->
+															<textarea id="message3_greetingsInput" rows="4" class="form-control form-control-lg form-control-solid mb-3" type="text" autocomplete="off" maxlength="999"></textarea>
+															<!--end::Input-->
+															<div class="text-muted text-left">E.g.: Good day $UserName,</div>
+														</div>
+														<!--end::Input group-->
+														<h2 class="fs-2x fw-bold py-10">Message body</h2>
+														<!--begin::Input group-->
+														<div class="fv-row mb-10">
+															<!--begin::Wrapper-->
+															<div class="d-flex flex-stack mb-2">
+																<!--begin::Label-->
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Option 1<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Max 2,999 chars"></i></label>
 																<!--end::Label-->
 															</div>
 															<!--end::Wrapper-->
@@ -275,20 +319,83 @@
 															<!--end::Input-->
 															<div class="text-muted text-left">Describe the purpose of your message</div>
 														</div>
+														<!--end::Input group-->
+														<!--begin::Input group-->
 														<div class="fv-row mb-10">
 															<!--begin::Wrapper-->
 															<div class="d-flex flex-stack mb-2">
 																<!--begin::Label-->
-																<label class="form-label fw-bold text-dark fs-6 mb-0">Regards<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Max 999 chars"></i></label>
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Option 2</label>
+																<!--end::Label-->
+															</div>
+															<!--end::Wrapper-->
+															<!--begin::Input-->
+															<textarea id="message2_bodyInput" rows="8" class="form-control form-control-lg form-control-solid mb-3" type="text" maxlength="2999"></textarea>
+															<!--end::Input-->
+														</div>
+														<!--end::Input group-->
+														<!--begin::Input group-->
+														<div class="fv-row mb-10">
+															<!--begin::Wrapper-->
+															<div class="d-flex flex-stack mb-2">
+																<!--begin::Label-->
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Option 3</label>
+																<!--end::Label-->
+															</div>
+															<!--end::Wrapper-->
+															<!--begin::Input-->
+															<textarea id="message3_bodyInput" rows="8" class="form-control form-control-lg form-control-solid mb-3" type="text" maxlength="2999"></textarea>
+															<!--end::Input-->
+														</div>
+														<!--end::Input group-->
+														<h2 class="fs-2x fw-bold py-10">Regards</h2>
+														<!--begin::Input group-->
+														<div class="fv-row mb-10">
+															<!--begin::Wrapper-->
+															<div class="d-flex flex-stack mb-2">
+																<!--begin::Label-->
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Option 1<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="Max 999 chars"></i></label>
 																<!--end::Label-->
 															</div>
 															<!--end::Wrapper-->
 															<!--begin::Input-->
 															<textarea id="message_regardsInput" rows="4" class="form-control form-control-lg form-control-solid mb-3" type="text" maxlength="999"></textarea>
 															<!--end::Input-->
-															<div class="text-muted text-left">E.g.: Best Regards</div>
+															<div class="text-muted text-left">E.g.: Best Regards, [your name here]</div>
 														</div>
+														<!--end::Input group-->
+														<!--begin::Input group-->
 														<div class="fv-row mb-10">
+															<!--begin::Wrapper-->
+															<div class="d-flex flex-stack mb-2">
+																<!--begin::Label-->
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Option 2</label>
+																<!--end::Label-->
+															</div>
+															<!--end::Wrapper-->
+															<!--begin::Input-->
+															<textarea id="message2_regardsInput" rows="4" class="form-control form-control-lg form-control-solid mb-3" type="text" maxlength="999"></textarea>
+															<!--end::Input-->
+															<div class="text-muted text-left">E.g.: Hope to hear from you soon!</div>
+														</div>
+														<!--end::Input group-->
+														<!--begin::Input group-->
+														<div class="fv-row mb-10">
+															<!--begin::Wrapper-->
+															<div class="d-flex flex-stack mb-2">
+																<!--begin::Label-->
+																<label class="form-label fw-bold text-dark fs-6 mb-0">Option 3</label>
+																<!--end::Label-->
+															</div>
+															<!--end::Wrapper-->
+															<!--begin::Input-->
+															<textarea id="message3_regardsInput" rows="4" class="form-control form-control-lg form-control-solid mb-3" type="text" maxlength="999"></textarea>
+															<!--end::Input-->
+															<div class="text-muted text-left">E.g.: Sincerely, [your name here]</div>
+														</div>
+														<!--end::Input group-->
+														<!--begin::Input group-->
+														<div class="fv-row py-10 mb-10">
 															<!--begin::Wrapper-->
 															<div class="d-flex flex-stack mb-2">
 																<!--begin::Label-->
@@ -456,36 +563,59 @@
 				indicatorLabel.textContent = 'Saving. ';
 				indicatorProgress.style.display = 'inline-block';
 
-				const message_greetings = document.getElementById('message_greetingsInput').value.replace(/\n/g, '\\n');
-				const message_body = document.getElementById('message_bodyInput').value.replace(/\n/g, '\\n');
-				const message_regards = document.getElementById('message_regardsInput').value.replace(/\n/g, '\\n');
+				/*const message_greetings = '[' + document.getElementById('message_greetingsInput').value.replace(/\n/g, '\\n') + '][' +
+			    document.getElementById('message2_greetingsInput').value.replace(/\n/g, '\\n') + '][' +
+			    document.getElementById('message3_greetingsInput').value.replace(/\n/g, '\\n') + ']';
+
+			  const message_body = '[' + document.getElementById('message_bodyInput').value.replace(/\n/g, '\\n') + '][' +
+			    document.getElementById('message2_bodyInput').value.replace(/\n/g, '\\n') + '][' +
+			    document.getElementById('message3_bodyInput').value.replace(/\n/g, '\\n') + ']';
+
+			  const message_regards = '[' + document.getElementById('message_regardsInput').value.replace(/\n/g, '\\n') + '][' +
+			    document.getElementById('message2_regardsInput').value.replace(/\n/g, '\\n') + '][' +
+			    document.getElementById('message3_regardsInput').value.replace(/\n/g, '\\n') + ']';*/
+
+				const message_greetings = '[!!mg1][mg2][mg3]';
+				const message_body = '[mb1][mb2][mb3]';
+				const message_regards = '[mr1][mr2][mr3]';
 				const extensionId = localStorage.getItem("extensionId");
 
 				// After the user logs in and you have the message value and emailRecordId
-				chrome.runtime.sendMessage(extensionId, { message_greetings, message_body, message_regards }, function(response) {
+				/*chrome.runtime.sendMessage(extensionId, { message_greetings, message_body, message_regards }, function(response) {
 				  if (!response.success) {
 				    handleError(url);
 				  } else {
 				    console.log('Message and emailRecordId sent successfully!');
 				  }
-				});
+				});*/
 
-				try {
-				  const Response = await fetch(`https://aisma-message.wrio.workers.dev/api/storeData?emailRecordId=${emailRecordId}&message_greetings=${message_greetings}&message_body=${message_body}&message_regards=${message_regards}`, {
-				    method: 'POST',
-				    headers: {
-				      'Content-Type': 'application/json',
-				    },
-				  });
+				const cloudflareWorkerURL = 'https://aisma-message.wrio.workers.dev/api/storeData';
+
+			  const options = {
+			    method: 'POST',
+			    headers: {
+			      'Content-Type': 'application/json',
+			    },
+			    body: JSON.stringify({
+			      emailRecordId,
+			      message_greetings,
+			      message_body,
+			      message_regards,
+			    }),
+			  };
+
+			  try {
+			    const Response = await fetch(cloudflareWorkerURL, options);
 
 				  if (!Response.ok) {
 				    console.error('Failed to store the message');
 				  } else {
-				    location.reload();
+						console.error('Failed to store the message');
+				    //location.reload();
 				  }
 				} catch (error) {
 				  console.error('Error:', error);
-				  location.reload();
+				  //location.reload();
 				}
 		  });
 
