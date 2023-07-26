@@ -21,13 +21,14 @@ chrome.runtime.onMessageExternal.addListener(function(request, sender, sendRespo
 });
 
 chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
+
   if (request.message_greetings && request.message_body && request.message_regards) {
     const message_greetings = request.message_greetings;
     const message_body = request.message_body;
     const message_regards = request.message_regards;
 
     // Format the data as needed (replace newlines with '\\n')
-    const formattedMessage = `[[${message_greetings}][${message_body.replace(/\n/g, '\\n')}][${message_regards.replace(/\n/g, '\\n')}]]`;
+    const formattedMessage = `${message_greetings},${message_body.replace(/\n/g, '\\n')},${message_regards.replace(/\n/g, '\\n')}`;
 
     // Store the data in the extension's storage
     chrome.storage.local.set({ twitterMessage: formattedMessage }, function() {
