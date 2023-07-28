@@ -8,7 +8,6 @@
     "accepts_tls_channel_id": false
   },
   "permissions": [
-    "tabs",
     "storage"
   ],
   "content_scripts": [
