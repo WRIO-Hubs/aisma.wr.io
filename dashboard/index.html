@@ -463,7 +463,8 @@
 			  const extensionIdFromURL = getURLParameter("extensionId");
 			  if (!extensionIdFromURL || extensionIdFromURL === "undefined") {
 			    // If extensionId is not found or is "undefined," redirect to the download page
-			    window.location.href = "../settings";
+					//console.log(extensionIdFromURL);
+			    window.location.href = "../settings/";
 			  } else {
 			    // Store the extensionId in localStorage for further use
 			    localStorage.setItem("extensionId", extensionIdFromURL);
