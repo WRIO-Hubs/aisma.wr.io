@@ -1,0 +1,23 @@
+/* tooltip.css */
+.tooltip {
+  float: right;
+  width: 320px;
+}
+/* Tooltip container styles */
+.tooltip-container {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background-color: #333;
+  border-radius: 4px;
+  color: #fff;
+  margin: 10px;
+  padding: 10px;
+  position: fixed;
+  right: 10px;
+  top: 30%;
+  z-index: 9999;
+}
+.tooltip-form{
+  margin-top: 5px;
+}
+a{color:white}

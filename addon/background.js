@@ -72,6 +72,44 @@ function openDashboard() {
   //chrome.tabs.create({ url: dashboardUrl, active: true }, function (tab) {});
 }
 
+// Function to reset the badge to its default state
+function resetBadge() {
+  // Reset the badge text and title
+  chrome.action.setBadgeText({ text: '' });
+  chrome.action.setTitle({ title: "AISMA" });
+}
+
+// Function to show the countdown timer in the extension badge
+function showCountdownTimer(seconds) {
+  // If the response status is 429, set the extension badge to "!"
+  chrome.action.setBadgeBackgroundColor({ color: '#FF0000' });
+  chrome.action.setTitle({ title: `Twitter says there are too many requests. Please wait...` });
+
+  const interval = setInterval(() => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    // Update the extension badge title with the countdown timer message
+    chrome.action.setTitle({ title: `Twitter says there are too many requests. Please wait for ${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds} minutes` });
+
+    seconds = seconds - 5;
+
+    if (seconds < 0) {
+      clearInterval(interval);
+      // Reset the badge after the countdown is complete
+      resetBadge();
+    }
+  }, 5000);
+}
+
+// Listen for messages from the content script
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.error429) {
+    // Show the countdown timer when scraping fails
+    showCountdownTimer(300);
+  }
+});
+
 // Function to retrieve Twitter contacts and update the badge count
 function updateBadgeCount() {
   chrome.storage.local.get('emailRecordId', function (result) {
