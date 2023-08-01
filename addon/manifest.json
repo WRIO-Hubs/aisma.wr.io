@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "AI Social Media Assistant",
   "description": "An AI-powered service to 10x enhance your networking building on Twitter",
-  "version": "0.1.1",
+  "version": "0.2",
   "externally_connectable": {
     "matches": ["*://127.0.0.1/*", "*://aisma.wr.io/*"],
     "accepts_tls_channel_id": false
