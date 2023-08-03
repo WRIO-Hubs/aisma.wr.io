@@ -3,7 +3,6 @@
 function checkLogin() {
 
 
-
     // Check if the emailRecordId exists in chrome.storage.local
     chrome.storage.local.get(['emailRecordId'], function (result) {
 

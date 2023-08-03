@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "AI Social Media Assistant",
-  "description": "An AI-powered service to 10x enhance your networking building on Twitter",
-  "version": "0.2",
+  "description": "An AI-powered service to 10x enhance your networking building",
+  "version": "0.3",
   "externally_connectable": {
     "matches": ["*://127.0.0.1/*", "*://aisma.wr.io/*"],
     "accepts_tls_channel_id": false
@@ -15,9 +15,10 @@
       "matches": [
         "*://127.0.0.1/*",
         "*://aisma.wr.io/*",
+        "*://*.linkedin.com/*",
         "*://twitter.com/*"
       ],
-      "js": ["content.js", "twitter_compose.js", "twitter_search.js", "twitter_profile.js", "twitter_followers.js", "twitter_dm.js", "twitter_dm_assist.js"]
+      "js": ["content.js", "linkedin_compose.js", "twitter_compose.js", "twitter_search.js", "twitter_profile.js", "twitter_followers.js", "twitter_dm.js", "twitter_dm_assist.js"]
     }
   ],
   "web_accessible_resources": [

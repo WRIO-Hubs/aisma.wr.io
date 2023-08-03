@@ -1,5 +1,4 @@
 let tooltipEnabled = false;
-let tweetTextFound = false; // Variable to track whether the tweet text element is found
 let tooltipElement; // Variable to store the tooltip element
 
 function sendWebhook(prompt, tweetText) {
@@ -18,9 +17,13 @@ function sendWebhook(prompt, tweetText) {
       return response.text(); // Parse the response body as text
     })
     .then((data) => {
+
+      const sanitizedResponse = sanitizeResponse(data); // Remove double quotes from the beginning and end
+      document.querySelector('#tooltipResponse').textContent = sanitizedResponse;
+
       const tooltipTextElement = tooltipElement ? tooltipElement.querySelector('#tooltipResponse') : null;
       if (tooltipTextElement) {
-        tooltipTextElement.textContent = data;
+        tooltipTextElement.textContent = sanitizedResponse;
 
         document.querySelector('#copyToClipboardBtn').style.display = "block";
       }
@@ -38,11 +41,15 @@ function copyToClipboard(elementId) {
     return;
   }
 
-  const text = element.textContent;
+  const text = element.textContent.trim(); // Remove leading and trailing whitespace
+
+  // Append the AI Social Media Assistant signature
+  const signature = "\n\n⚡ by aisma.wr.​io";
+  const textWithSignature = text + signature;
 
   // Create a temporary textarea to copy the text to the clipboard
   const textarea = document.createElement('textarea');
-  textarea.value = text;
+  textarea.value = textWithSignature;
   textarea.setAttribute('readonly', '');
   textarea.style.position = 'absolute';
   textarea.style.left = '-9999px';
@@ -55,6 +62,7 @@ function copyToClipboard(elementId) {
   // Remove the temporary textarea
   document.body.removeChild(textarea);
 }
+
 
 // Function to show the tooltip with Webhook response data
 function showTooltip(data) {
@@ -109,7 +117,6 @@ function createCopyButton(data) {
 
   copyButton.addEventListener('click', () => {
     copyToClipboard('tooltipResponse'); // Pass the element ID here
-    console.log('Webhook response copied to clipboard successfully.');
   });
 
   container.appendChild(container_response);
@@ -128,9 +135,7 @@ async function handleWebhookSubmit() {
 
     const tweetTextElement = document.querySelector('[data-testid="tweetText"] span');
 
-    //tweetTextFound = true;
     const tweetText = tweetTextElement.textContent;
-    //console.log("tweetText:", tweetText);
 
     // Check if the prompt is empty, and if so, assign the default value
     if (prompt === '') {
@@ -138,12 +143,24 @@ async function handleWebhookSubmit() {
     }
 
     try {
-      await sendWebhook(prompt, tweetText);
+      const response = await sendWebhook(prompt, tweetText);
     } catch (error) {
       console.error('Error sending webhook:', error);
+      document.querySelector('#tooltipResponse').textContent = 'Error sending prompt to webhook';
     }
   }
 }
+
+
+function sanitizeResponse(response) {
+  // Check if the response is a string and not empty
+  if (typeof response === 'string' && response.trim() !== '') {
+    // Remove double quotes from the beginning and end of the response
+    response = response.replace(/^"/, '').replace(/"$/, '');
+  }
+  return response;
+}
+
 
 // Function to show the tooltip content
 function showTooltipContent(data) {
@@ -181,11 +198,10 @@ function showTooltipContent(data) {
 
 // Function to find the "reply" button and attach the click event listener
 function findReplyButton() {
-
   // Find the "reply" button
   const replyButton = document.querySelector('[data-testid="reply"]');
 
-  if (replyButton && !tweetTextFound) {
+  if (replyButton) {
 
     // Create and append the <span> element
     /*const spanElement = document.createElement('span');
@@ -210,16 +226,10 @@ function findReplyButton() {
 }
 
 
-let previousURL = window.location.href;
-
 setInterval(() => {
-  const currentURL = window.location.href;
-  // Check if the URL has changed
-  if (currentURL !== previousURL) {
-    previousURL = currentURL; // Update the previous URL to the current URL
+    let currentURL = window.location.href;
     const hasStatusKeyword = currentURL.includes('status');
     const hasComposeKeyword = currentURL.includes('compose');
-
     if (hasStatusKeyword || hasComposeKeyword) {
       if (!tooltipEnabled) {
         findReplyButton();
@@ -231,6 +241,5 @@ setInterval(() => {
         helpTooltipElement.style.display = 'none';
       }
     }
-  }
 
 }, 2500);
