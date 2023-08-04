@@ -22,24 +22,21 @@ function appendOkButton(targetElement) {
     appendHiToChildP(targetElement);
   });
 
-  // Check if the "Ok" button is already appended
-  if (!targetElement.classList.contains('ok-button-appended')) {
-    const commentBox = targetElement.closest('.comments-comment-box.comments-comment-box--has-avatar');
-    if (commentBox) {
-      commentBox.insertBefore(okButton, commentBox.firstChild);
-    }
-    targetElement.classList.add('ok-button-appended'); // Add class to mark the appended "Ok" button
+  // Check if the "Ok" button is not already appended to the target element
+  if (!targetElement.hasAttribute('data-ok-button-appended')) {
+    targetElement.appendChild(okButton);
+    targetElement.setAttribute('data-ok-button-appended', true); // Add custom attribute to mark the appended "Ok" button
   }
 }
 
-// Function to append the "Ok" button to all target elements with class "comments-comment-box-comment__text-editor"
+// Function to append the "Ok" button to all target elements with class "comments-comment-box__form"
 function appendOkButtonsToAll() {
-  const targetElements = findElementsByClass('comments-comment-box-comment__text-editor');
+  const targetElements = findElementsByClass('comments-comment-box__form');
 
   if (targetElements.length > 0) {
     for (const targetElement of targetElements) {
-      // Check if the "Ok" button is already appended to this element
-      if (!targetElement.classList.contains('ok-button-appended')) {
+      // Check if the "Ok" button is not already appended to this element
+      if (!targetElement.hasAttribute('data-ok-button-appended')) {
         appendOkButton(targetElement);
       }
     }
@@ -48,7 +45,6 @@ function appendOkButtonsToAll() {
 
 // Function to try finding the elements and append the "Ok" button
 function findElementsAndAppendOkButton() {
-  findElementsRepeatedly();
   appendOkButtonsToAll();
 }
 
@@ -62,5 +58,5 @@ function findElementsRepeatedly() {
 
 setInterval(findElementsRepeatedly, 2500);
 
-// Additional: Call the findElementsRepeatedly() function when the user scrolls the feed (you might need to adjust the event based on your specific page)
+// Call the findElementsRepeatedly() function when the user scrolls the feed
 window.addEventListener('scroll', findElementsRepeatedly);
