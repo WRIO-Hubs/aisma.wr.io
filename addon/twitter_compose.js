@@ -1,14 +1,14 @@
 let tooltipEnabled = false;
 let tooltipElement; // Variable to store the tooltip element
 
-function sendWebhook(prompt, tweetText) {
-  const webhookUrl = 'https://aisma-twitter-reply.wrio.workers.dev/';
+function sendWebhook(prompt, postText) {
+  const webhookUrl = 'https://aisma-post-reply.wrio.workers.dev/';
   fetch(webhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ prompt: prompt, tweetText: tweetText }),
+    body: JSON.stringify({ prompt: prompt, postText: postText }),
   })
     .then((response) => {
       if (!response.ok) {
@@ -135,7 +135,7 @@ async function handleWebhookSubmit() {
 
     const tweetTextElement = document.querySelector('[data-testid="tweetText"] span');
 
-    const tweetText = tweetTextElement.textContent;
+    const postText = tweetTextElement.textContent;
 
     // Check if the prompt is empty, and if so, assign the default value
     if (prompt === '') {
@@ -143,7 +143,7 @@ async function handleWebhookSubmit() {
     }
 
     try {
-      const response = await sendWebhook(prompt, tweetText);
+      const response = await sendWebhook(prompt, postText);
     } catch (error) {
       console.error('Error sending webhook:', error);
       document.querySelector('#tooltipResponse').textContent = 'Error sending prompt to webhook';

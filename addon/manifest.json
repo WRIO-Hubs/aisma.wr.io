@@ -14,11 +14,29 @@
     {
       "matches": [
         "*://127.0.0.1/*",
-        "*://aisma.wr.io/*",
-        "*://*.linkedin.com/*",
+        "*://aisma.wr.io/*"
+      ],
+      "js": ["content.js"]
+    },
+    {
+      "matches": [
+        "*://*.linkedin.com/*"
+      ],
+      "js": ["content.js", "linkedin_compose.js"]
+    },
+    {
+      "matches": [
         "*://twitter.com/*"
       ],
-      "js": ["content.js", "linkedin_compose.js", "twitter_compose.js", "twitter_search.js", "twitter_profile.js", "twitter_followers.js", "twitter_dm.js", "twitter_dm_assist.js"]
+      "js": [
+        "content.js",
+        "twitter_compose.js",
+        "twitter_search.js",
+        "twitter_profile.js",
+        "twitter_followers.js",
+        "twitter_dm.js",
+        "twitter_dm_assist.js"
+      ]
     }
   ],
   "web_accessible_resources": [
