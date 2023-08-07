@@ -17,26 +17,31 @@ function sendWebhook(prompt, postText, postId) {
       return response.text(); // Parse the response body as text
     })
     .then((data) => {
-      console.log('prompt', prompt);
-        console.log('postText', postText);
       const sanitizedResponse = sanitizeResponse(data); // Remove double quotes from the beginning and end
 
+      let qlEditorBlankElement;
+
+      if (postId === '1') {
+        // For single post pages without data-id, directly find the .ql-editor.ql-blank element
+        qlEditorBlankElement = document.querySelector('.ql-editor');
+      } else {
+        // For pages with multiple posts, find the .ql-editor.ql-blank class within the target element
         const targetElement = document.querySelector(`[data-id="urn:li:activity:${postId}"]`);
         if (targetElement) {
-          // Find the .ql-editor.ql-blank class within the target element
-          const qlEditorBlankElement = targetElement.querySelector('.ql-editor.ql-blank');
-
-          if (qlEditorBlankElement) {
-            // Create a new p element to hold the sanitized response
-            const responseTextElement = qlEditorBlankElement.querySelector('p');
-
-            // Append the AI Social Media Assistant signature
-            const signature = "\n\n⚡ by aisma.wr.​io";
-            const textWithSignature = sanitizedResponse + signature;
-
-            responseTextElement.textContent = textWithSignature;
-          }
+          qlEditorBlankElement = targetElement.querySelector('.ql-editor');
         }
+      }
+
+      if (qlEditorBlankElement) {
+        // Remove all existing <p> elements inside the qlEditorBlankElement to clear text field
+        qlEditorBlankElement.innerHTML = '';
+
+        // Append the AI Social Media Assistant signature
+        const signature = "\n\n⚡ by aisma.wr.​io";
+        const textWithSignature = sanitizedResponse + signature;
+
+        qlEditorBlankElement.textContent = textWithSignature;
+      }
 
     })
     .catch((error) => {
@@ -62,9 +67,17 @@ function findElementsByClass(className) {
 function appendInputFieldAndSubmitButton(targetElement, postId) {
   const inputField = document.createElement('input');
   inputField.type = 'text';
-  inputField.id = `webhookPrompt_${postId}`;
+  inputField.id = `webhookPrompt`;
+  inputField.className = `webhookPrompt_${postId}`;
   inputField.placeholder = 'Write a funny comment';
   inputField.style.marginTop = '10px';
+
+  // Add the <p> element with the tip text
+  const tipParagraph = document.createElement('p');
+  tipParagraph.style.fontSize = '13px';
+  tipParagraph.textContent = "Tip: click 'Shift+del' to delete an autosuggestion";
+  tipParagraph.style.margin = '4px 0';
+  tipParagraph.style.color = '#BBB';
 
   const submitButton = document.createElement('button');
   submitButton.textContent = 'Submit';
@@ -76,13 +89,19 @@ function appendInputFieldAndSubmitButton(targetElement, postId) {
   submitButton.style.borderRadius = '4px';
   submitButton.style.cursor = 'pointer';
 
+  // Set a custom attribute "data-submit-button" to identify the button later
+  submitButton.setAttribute('data-submit-button', postId);
+
   submitButton.addEventListener('click', () => {
+    event.preventDefault(); // Prevent the form submission
     handleWebhookSubmit(postId);
   });
 
   targetElement.appendChild(inputField);
+  targetElement.appendChild(tipParagraph);
   targetElement.appendChild(submitButton);
 }
+
 
 
 // Function to append the input field and submit button to all target elements with class "comments-comment-box__form"
@@ -91,9 +110,17 @@ function appendInputFieldsAndSubmitButtonsToAll() {
 
   if (targetElements.length > 0) {
     for (const targetElement of targetElements) {
-      const postIdAttribute = targetElement.closest('[data-id]').getAttribute('data-id'); // Update the attribute selector to match the element's data-id attribute
-      // Extract the numeric postId from the data-id attribute
-      const postId = postIdAttribute.match(/\d+/)[0];
+      let postId;
+      const postIdAttribute = targetElement.closest('[data-id]')?.getAttribute('data-id');
+      // Check if the data-id attribute exists for the post element
+      if (postIdAttribute) {
+        // Extract the numeric postId from the data-id attribute
+        postId = postIdAttribute.match(/\d+/)[0];
+      } else {
+        // If data-id attribute is missing, consider using a default value for postId
+        postId = '1'; // for single post pages https://www.linkedin.com/feed/update/
+      }
+
       // Check if the input field and submit button are not already appended to this element
       if (!targetElement.hasAttribute('data-input-field-appended')) {
         appendInputFieldAndSubmitButton(targetElement, postId);
@@ -122,8 +149,10 @@ document.addEventListener('DOMContentLoaded', findElementsAndAppendInputFieldAnd
 
 // Function to handle the submit event when the user clicks the submit button
 async function handleWebhookSubmit(postId) {
-  const webhookPromptInput = document.getElementById(`webhookPrompt_${postId}`);
-  if (webhookPromptInput) {
+  const webhookPromptInput = document.getElementsByClassName(`webhookPrompt_${postId}`)[0];
+  const submitButton = document.querySelector(`[data-submit-button="${postId}"]`);
+
+  if (webhookPromptInput && submitButton) {
     let prompt = webhookPromptInput.value.trim(); // Trim the input value to remove leading and trailing spaces
 
     const postText = postTextMap[postId] || ''; // Use default value if postTextMap doesn't have a value for the postId
@@ -133,15 +162,27 @@ async function handleWebhookSubmit(postId) {
       prompt = 'Write a funny comment';
     }
 
+    // Disable the submit button and change its text to "Please wait..."
+    submitButton.textContent = 'Please wait...';
+    submitButton.disabled = true;
+
     try {
       const response = await sendWebhook(prompt, postText, postId);
+
+      // Re-enable the submit button and restore its original text after the request is complete
+      submitButton.textContent = 'Submit';
+      submitButton.disabled = false;
     } catch (error) {
       console.error('Error sending webhook:', error);
+      // If an error occurs, also re-enable the submit button and restore its original text
+      submitButton.textContent = 'Submit';
+      submitButton.disabled = false;
     }
   } else {
-    console.error(`Webhook prompt input not found for postId ${postId}`);
+    console.error(`Webhook prompt input or submit button not found for postId ${postId}`);
   }
 }
+
 
 
 
@@ -150,13 +191,19 @@ function findElementsRepeatedly() {
   appendInputFieldsAndSubmitButtonsToAll(); // Append the input field and submit button to all target elements
 
   // Scrape and store the text of each post
-  const postElements = document.querySelectorAll('[data-id]');
+  const postElements = document.querySelectorAll('div[data-id]');
 
   if (postElements.length > 0) {
+
     for (const postElement of postElements) {
+
+      let postId;
       const postIdAttribute = postElement.getAttribute('data-id');
-      // Extract the numeric postId from the data-id attribute
-      const postId = postIdAttribute.match(/\d+/)[0];
+      // Check if the data-id attribute exists for the post element
+      if (postIdAttribute) {
+        // Extract the numeric postId from the data-id attribute
+        postId = postIdAttribute.match(/\d+/)[0];
+      }
 
       const commentaryElement = postElement.querySelector('.feed-shared-update-v2__commentary span');
 
@@ -167,14 +214,27 @@ function findElementsRepeatedly() {
           scrapedText += spanElement.textContent.trim() + ' ';
         }
         postTextMap[postId] = scrapedText.trim(); // Store the combined text content in the postTextMap
-        /*console.log('scrapedText:', scrapedText);
-        console.log('postId:', postId);*/
-
       } else {
         //console.log(`No commentary element found for postId ${postId}`);
         postTextMap[postId] = ''; // Set an empty string as the value for the postId if the element is not found
       }
     }
+  } else {
+
+    const commentaryElement = document.querySelector('.feed-shared-update-v2__commentary span');
+
+    if (commentaryElement) {
+      const spanElements = commentaryElement.querySelectorAll('span');
+      let scrapedText = '';
+      for (const spanElement of spanElements) {
+        scrapedText += spanElement.textContent.trim() + ' ';
+      }
+      postTextMap[1] = scrapedText.trim(); // Store the combined text content in the postTextMap
+    } else {
+      //console.log(`No commentary element found for postId ${postId}`);
+      postTextMap[1] = ''; // Set an empty string as the value for the postId if the element is not found
+    }
+
   }
 }
 

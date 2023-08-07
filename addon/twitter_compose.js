@@ -185,6 +185,15 @@ function showTooltipContent(data) {
     submitButton.addEventListener('click', handleWebhookSubmit); // Add the event listener here
     formElement.appendChild(submitButton);
 
+    // Add the <p> element with the tip text
+    const tipParagraph = document.createElement('div');
+    const tipSmallElement = document.createElement('small');
+    tipSmallElement.textContent = "Tip: click 'Shift+del' to delete an autosuggestion";
+    tipSmallElement.style.margin = '4px 0';
+    tipSmallElement.style.color = '#BBB';
+    tipParagraph.appendChild(tipSmallElement);
+    tooltipTextElement.appendChild(tipParagraph);
+
     // Add the "Copy to Clipboard" button after the prompt input field
     const copyButtonContainer = createCopyButton(data);
     formElement.appendChild(copyButtonContainer);

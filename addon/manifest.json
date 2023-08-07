@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI Social Media Assistant",
-  "description": "An AI-powered service to 10x enhance your networking building",
+  "description": "An AI-powered service to 10x enhance your networking building.",
   "version": "0.3",
   "externally_connectable": {
     "matches": ["*://127.0.0.1/*", "*://aisma.wr.io/*"],
@@ -22,7 +22,11 @@
       "matches": [
         "*://*.linkedin.com/*"
       ],
-      "js": ["content.js", "linkedin_compose.js"]
+      "js": [
+        "content.js",
+        "linkedin_compose.js",
+        "linkedin_profiles.js"
+      ]
     },
     {
       "matches": [
