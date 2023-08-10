@@ -1,5 +1,7 @@
 let lnEnabled = false;
 let postTextMap = {}; // Object to store the scraped text for each post
+let shouldRecheckElements = false; // Flag to indicate if we need to recheck elements after scroll
+
 
 function sendWebhook(prompt, postText, postId) {
   const webhookUrl = 'https://aisma-post-reply.wrio.workers.dev/';
@@ -241,15 +243,63 @@ function findElementsRepeatedly() {
 
 // Function to call findElementsRepeatedly() on scroll event
 function handleScrollEvent() {
+  shouldRecheckElements = true; // Set the flag to true when the user scrolls
   findElementsRepeatedly();
   // Add any additional logic or action you want to perform on scroll here
 }
 
-// Call the findElementsRepeatedly() function when the user scrolls the feed
-window.addEventListener('scroll', handleScrollEvent);
 
-// Create a MutationObserver to observe changes to the DOM and call the appendInputFieldsAndSubmitButtonsToAll() function when new elements are added
-const mutationObserver = new MutationObserver(appendInputFieldsAndSubmitButtonsToAll);
+// Keep track of processed elements using a Set
+const processedElements = new Set();
+
+// Function to show the description text in the console with replacements and apply styles
+function showDescriptionTextWithReplacements(descriptionElement) {
+  const scrappedText = descriptionElement.textContent.trim();
+
+  // Check if the scrapped text contains "business" or "SaaS" (case-insensitive)
+  if (scrappedText.match(/business|saas|founder/i)) {
+    // Apply styles to the element
+    descriptionElement.style.backgroundColor = 'lightgreen';
+    descriptionElement.style.border = '2px solid green';
+    console.log('success');
+  }
+
+  // Add the element to the Set of processed elements
+  processedElements.add(descriptionElement);
+}
+
+// Function to observe elements with specific classes
+function observeNewElements() {
+  const targetElements = document.querySelectorAll(
+    '.update-components-actor, .comments-post-meta__profile-info-wrapper'
+  );
+
+  // Filter out elements that have already been processed
+  const newElements = Array.from(targetElements).filter((element) => !processedElements.has(element));
+
+  // Check if there are any new elements found
+  if (newElements.length > 0) {
+    for (const targetElement of newElements) {
+      // Display the text content in the console for each new element with replacements and styles
+      showDescriptionTextWithReplacements(targetElement);
+    }
+  }
+}
+
+// Function to observe changes to the DOM and call the appropriate functions when new elements are added
+const mutationObserver = new MutationObserver((mutationsList) => {
+  for (const mutation of mutationsList) {
+    // Check if new nodes are added
+    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+      // Call the function to append input fields and submit buttons to new elements
+      appendInputFieldsAndSubmitButtonsToAll();
+      // Call the function to observe elements with specific classes for changes
+      if (shouldRecheckElements) {
+        observeNewElements();
+      }
+    }
+  }
+});
 
 // Observe the body element and its descendants for additions of child elements
 mutationObserver.observe(document.body, {
@@ -257,5 +307,14 @@ mutationObserver.observe(document.body, {
   subtree: true,
 });
 
-// Call the appendInputFieldsAndSubmitButtonsToAll() function on initial page load
-appendInputFieldsAndSubmitButtonsToAll();
+// Function to find and observe elements with specific classes on initial page load
+function observeElementsOnLoad() {
+  appendInputFieldsAndSubmitButtonsToAll();
+  observeNewElements();
+}
+
+// Call the function to observe elements with specific classes on initial page load
+observeElementsOnLoad();
+
+// Call the findElementsRepeatedly() function when the user scrolls the feed
+window.addEventListener('scroll', handleScrollEvent);
