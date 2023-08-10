@@ -163,76 +163,76 @@
 
 
 		<script>
-function sign_up(email, password) {
-	const requestOptions = {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
-		body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-	};
+			function sign_up(email, password) {
+				const requestOptions = {
+			    method: 'POST',
+			    headers: {
+			      'Content-Type': 'application/json', // Set the content type to JSON
+			    },
+			    body: JSON.stringify({ email: email, password: password }), // Convert to JSON string
+			  };
 
-	fetch('https://aisma-signup.wrio.workers.dev/', requestOptions)
-		.then(response => {
-			if (response.ok) {
-				return response.text();
-			} else if (response.status === 409) {
-				throw new Error('The email is already registered. Sign in to proceed');
-			} else {
-				throw new Error('Error creating user');
+				fetch('https://aisma-signup.wrio.workers.dev/', requestOptions)
+					.then(response => {
+						if (response.ok) {
+							return response.text();
+						} else if (response.status === 409) {
+							throw new Error('The email is already registered. Sign in to proceed');
+						} else {
+							throw new Error('Error creating user');
+						}
+					})
+					.then(data => {
+						console.log('User record ID:', data);
+						window.location.href = 'thank_you';
+					})
+					.catch(error => {
+						console.error('Error:', error.message);
+						document.getElementById('error-message').textContent =
+							'The email is already registered. Sign in to proceed';
+						document.getElementById('error-message').style.display = 'block';
+						document.getElementById('kt_submit').disabled = false;
+					});
 			}
-		})
-		.then(data => {
-			console.log('User record ID:', data);
-			window.location.href = 'thank_you';
-		})
-		.catch(error => {
-			console.error('Error:', error.message);
-			document.getElementById('error-message').textContent =
-				'The email is already registered. Sign in to proceed';
-			document.getElementById('error-message').style.display = 'block';
-			document.getElementById('kt_submit').disabled = false;
-		});
-}
 
-// Add a click event listener to the button
-var button = document.getElementById('kt_submit');
-button.addEventListener('click', function(event) {
-	event.preventDefault(); // Prevent form from submitting normally
-	const submitButton = document.getElementById('kt_submit');
-	const indicatorLabel = submitButton.querySelector('.indicator-label');
-	const indicatorProgress = submitButton.querySelector('.indicator-progress');
-	// Change the text to "Saving" and show the spinner
-	indicatorLabel.textContent = 'Saving. ';
-	indicatorProgress.style.display = 'inline-block';
+			// Add a click event listener to the button
+			var button = document.getElementById('kt_submit');
+			button.addEventListener('click', function(event) {
+				event.preventDefault(); // Prevent form from submitting normally
+				const submitButton = document.getElementById('kt_submit');
+				const indicatorLabel = submitButton.querySelector('.indicator-label');
+				const indicatorProgress = submitButton.querySelector('.indicator-progress');
+				// Change the text to "Saving" and show the spinner
+				indicatorLabel.textContent = 'Saving. ';
+				indicatorProgress.style.display = 'inline-block';
 
-	var emailInput = document.getElementById('emailInput').value;
-	var passwordInput = document.getElementById('passwordInput').value;
-	if (isValidEmail(emailInput) && passwordInput.trim() !== '') {
-		document.getElementById('kt_submit').disabled = true;
-		document.getElementById('error-message').style.display = 'none';
-		sign_up(emailInput, passwordInput);
-	}
-});
+				var emailInput = document.getElementById('emailInput').value;
+				var passwordInput = document.getElementById('passwordInput').value;
+				if (isValidEmail(emailInput) && passwordInput.trim() !== '') {
+					document.getElementById('kt_submit').disabled = true;
+					document.getElementById('error-message').style.display = 'none';
+					sign_up(emailInput, passwordInput);
+				}
+			});
 
-// Add a submit event listener to the form
-var form = document.getElementById('kt_form');
-form.addEventListener('submit', function(event) {
-	event.preventDefault(); // Prevent form from submitting normally
+			// Add a submit event listener to the form
+			var form = document.getElementById('kt_form');
+			form.addEventListener('submit', function(event) {
+				event.preventDefault(); // Prevent form from submitting normally
 
-	var emailInput = document.getElementById('emailInput').value;
-	var passwordInput = document.getElementById('passwordInput').value;
-	if (isValidEmail(emailInput) && passwordInput.trim() !== '') {
-		document.getElementById('kt_submit').disabled = true;
-		sign_up(emailInput, passwordInput);
-	}
-});
+				var emailInput = document.getElementById('emailInput').value;
+				var passwordInput = document.getElementById('passwordInput').value;
+				if (isValidEmail(emailInput) && passwordInput.trim() !== '') {
+					document.getElementById('kt_submit').disabled = true;
+					sign_up(emailInput, passwordInput);
+				}
+			});
 
-// Email validation function
-function isValidEmail(email) {
-	var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	return regex.test(email);
-}
+			// Email validation function
+			function isValidEmail(email) {
+				var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+				return regex.test(email);
+			}
 </script>
 
 
