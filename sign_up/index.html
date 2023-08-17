@@ -179,8 +179,10 @@
 						} else if (response.status === 409) {
 							throw new Error('The email is already registered. Sign in to proceed');
 						} else {
-							throw new Error('Error creating user');
-						}
+			        return response.text().then(errorMessage => {
+			          throw new Error(errorMessage); // Throw the actual error message received from the server
+			        });
+			      }
 					})
 					.then(data => {
 						console.log('User record ID:', data);
