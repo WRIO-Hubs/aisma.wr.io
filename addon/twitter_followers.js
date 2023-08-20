@@ -22,7 +22,6 @@ function checkFollowersPage() {
         const hasMatch = criteria.some((word) => mergedText.toLowerCase().includes(word.toLowerCase()));
 
         if (hasMatch && !element.dataset.scanLinkAdded) {
-          element.style.border = '1px solid green';
           element.style.backgroundColor = 'lightgreen';
 
           const linkElement = element.querySelector('a.css-4rbku5.css-18t94o4.css-1dbjc4n.r-1loqt21.r-1wbh5a2.r-dnmrzs.r-1ny4l3l');
