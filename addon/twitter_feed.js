@@ -1,12 +1,29 @@
-let previousMergedText = '';
-let hoveredElement = null;
-let timeoutId = null;
+function getInitialMatchWords(callback) {
+  chrome.storage.local.get('criteria', function(result) {
+    try {
+      const initialCriteria = result.criteria;
+      const initialMatchWords = initialCriteria ? initialCriteria.split(',').map(word => word.trim()) : [];
+
+      if (initialMatchWords.length === 0) {
+        console.log('Initial Criteria is empty.');
+      } else {
+        //console.log('Initial Criteria:', initialMatchWords);
+      }
+
+      callback(initialMatchWords);
+    } catch (error) {
+      console.error('Error while processing initial criteria:', error);
+      callback([]);
+    }
+  });
+}
+
 
 
 // Function to initialize IndexedDB
 function initializeIndexedDB() {
   try {
-    const request = indexedDB.open('AISMATwitter', 3);
+    const request = indexedDB.open('AISMATwitter', 4);
 
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
@@ -19,7 +36,7 @@ function initializeIndexedDB() {
     };
 
     request.onsuccess = (event) => {
-      //console.log('IndexedDB initialized successfully.');
+      console.log('IndexedDB initialized successfully.');
     };
 
     request.onerror = (error) => {
@@ -31,13 +48,14 @@ function initializeIndexedDB() {
 }
 
 
+
 function retryOpenIndexedDB(retries) {
   if (retries <= 0) {
     console.error('Unable to open IndexedDB after retries.');
     return;
   }
 
-  const request = indexedDB.open('AISMATwitter', 3);
+  const request = indexedDB.open('AISMATwitter', 4);
 
   request.onsuccess = (event) => {
     //console.log('IndexedDB initialized successfully.');
@@ -57,9 +75,10 @@ retryOpenIndexedDB(3); // You can adjust the number of retries
 // Call the function to initialize IndexedDB
 initializeIndexedDB();
 
+
 // Function to record matched words in IndexedDB
-function recordMatchedWords(userHandle, matchedWords, scanned, following, userFollow) {
-  const request = indexedDB.open('AISMATwitter', 3);
+function updateIndexedDB(userHandle, updatedProperties) {
+  const request = indexedDB.open('AISMATwitter', 4);
 
   request.onsuccess = (event) => {
     const db = event.target.result;
@@ -67,16 +86,48 @@ function recordMatchedWords(userHandle, matchedWords, scanned, following, userFo
     const transaction = db.transaction('scanRecords', 'readwrite');
     const objectStore = transaction.objectStore('scanRecords');
 
-    const record = { userHandle, matchedWords, scanned, following, userFollow };
+    // Retrieve the existing record
+    const getRequest = objectStore.get(userHandle);
 
-    const putRequest = objectStore.put(record);
+    getRequest.onsuccess = (event) => {
+      const existingRecord = event.target.result;
 
-    putRequest.onsuccess = () => {
-      console.log('Matched words and scanned status updated successfully.');
+      if (existingRecord) {
+        // Update the specified properties
+        for (const prop in updatedProperties) {
+          if (updatedProperties.hasOwnProperty(prop)) {
+            existingRecord[prop] = updatedProperties[prop];
+          }
+        }
+
+        // Put the updated record back into the database
+        const putRequest = objectStore.put(existingRecord);
+
+        putRequest.onsuccess = () => {
+          //console.log('Record updated successfully.');
+        };
+
+        putRequest.onerror = (error) => {
+          console.error('Error updating record:', error);
+        };
+      } else {
+        //console.error('Existing record not found for user:', userHandle);
+        // Create a new record with the updated properties
+        const newRecord = { userHandle, ...updatedProperties };
+        const addRequest = objectStore.add(newRecord);
+
+        addRequest.onsuccess = () => {
+          //console.log('New record added successfully.');
+        };
+
+        addRequest.onerror = (error) => {
+          console.error('Error adding new record:', error);
+        };
+      }
     };
 
-    putRequest.onerror = (error) => {
-      console.error('Error updating matched words and scanned status:', error);
+    getRequest.onerror = (error) => {
+      console.error('Error getting record:', error);
     };
   };
 
@@ -87,9 +138,9 @@ function recordMatchedWords(userHandle, matchedWords, scanned, following, userFo
 
 
 
-function isUserScanned(userHandle, callback) {
+function DBChecking(userHandle, callback) {
   try {
-    const request = indexedDB.open('AISMATwitter', 3);
+    const request = indexedDB.open('AISMATwitter', 4);
 
     request.onsuccess = (event) => {
       const db = event.target.result;
@@ -101,266 +152,177 @@ function isUserScanned(userHandle, callback) {
 
       getRequest.onsuccess = (event) => {
         const result = event.target.result;
-        const scanned = !!result; // Convert to boolean
+        //const dbChecked = !!result; // Convert to boolean
 
-        callback(scanned);
+        callback(result);
       };
     };
 
     request.onerror = (error) => {
       console.error('Error opening AISMATwitter:', error);
-      callback(false); // Handle error by assuming user is not scanned
+      callback(false); // Handle error by assuming user is not checked
     };
 
   } catch (error) {
-    console.error('Error in isUserScanned:', error);
+    console.error('Error in DBChecking:', error);
     callback(false);
   }
 }
 
 
 
-const scannedElements = new Set();
-
-function checkMatchWords(mergedText, link, matchWords) {
-  const matchedWords = matchWords.filter((word) => mergedText.toLowerCase().includes(word.toLowerCase()));
-
-  const userHandle = link.match(/\/([^/]+)$/)[1];
-
-  recordMatchedWords(userHandle, matchedWords, false);
-
-  if (matchedWords.length > 0 && hoveredElement) {
-
-    const existingScanLink = hoveredElement.querySelector('[data-testid="scanLink"]');
-
-    if (!existingScanLink) {
-      hoveredElement.style.backgroundColor = 'lightgreen';
-
-      const scanLink = document.createElement('a');
-      scanLink.setAttribute('href', link);
-      scanLink.innerText = 'Scan';
-      // Apply the updated styles
-      scanLink.style.margin = '4px';
-      scanLink.style.padding = '0 16px';
-      scanLink.style.color = 'white';
-      scanLink.style.fontSize = '14px';
-      scanLink.style.textDecoration = 'none';
-      scanLink.style.fontWeight = 'bold';
-      scanLink.style.backgroundColor = 'rgb(15, 20, 25)';
-      scanLink.style.minHeight = '32px';
-      scanLink.style.borderRadius = '9999px';
-      // Add the CSS classes
-      scanLink.classList.add('css-901oao', 'r-1awozwy', 'r-jwli3a', 'r-6koalj', 'r-18u37iz', 'r-16y2uox', 'r-37j5jr', 'r-a023e6', 'r-b88u0q', 'r-1777fci', 'r-rjixqe', 'r-bcqeeo', 'r-q4m81j', 'r-qvutc0');
-      scanLink.setAttribute('data-testid', 'scanLink');
-
-      const targetElement = hoveredElement.querySelector('.css-1dbjc4n.r-1joea0r > .css-1dbjc4n.r-18u37iz.r-1ssbvtb.r-1wtj0ep');
-      if (targetElement) {
-        const parentElement = targetElement.parentNode;
-        parentElement.insertBefore(scanLink, targetElement);
-      }
-
-      scanLink.addEventListener('click', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const userHandle = link.match(/\/([^/]+)$/)[1];
-
-        // Record the user's Twitter handle and timestamp in IndexedDB when they click on "Scan"
-        recordMatchedWords(userHandle, matchedWords, true);
-
-        // Open the scan URL in the extension
-        chrome.runtime.sendMessage({ openScanUrl: link });
-
-      });
-
-
-    }
-
-  }
-}
-
-
-
-
-
-
-function setHoveredElement(element) {
-  if (hoveredElement) {
-    clearTimeout(timeoutId);
-    hoveredElement.removeAttribute('id');
-  }
-
-  hoveredElement = element;
-  hoveredElement.setAttribute('id', 'hovered');
-}
-
-function findElement(event) {
-
-  const tweetElements = document.querySelectorAll('a.css-4rbku5.css-18t94o4.css-1dbjc4n.r-1loqt21.r-1wbh5a2.r-dnmrzs.r-1ny4l3l');
+// Function to find tweet elements and check if user is scanned
+function findElement() {
+  const tweetElements = document.querySelectorAll('[data-testid="tweet"]:not(.db_checked)');
 
   tweetElements.forEach((tweetElement) => {
-    const link = tweetElement.getAttribute('href');
+
+    const tweetahref = tweetElement.querySelector('a.css-4rbku5.css-18t94o4.css-1dbjc4n.r-1loqt21.r-1wbh5a2.r-dnmrzs.r-1ny4l3l');
+    const link = tweetahref.getAttribute('href');
     const tweetAuthorMatch = link.match(/\/([^/]+)/);
+    const tweetAuthor = tweetAuthorMatch[1]; // Define tweetAuthor here
 
     if (tweetAuthorMatch) {
-    const tweetAuthor = tweetAuthorMatch[1];
+      DBChecking(tweetAuthor, (dbChecked) => {
+        const topMenu = tweetElement.querySelector('.css-1dbjc4n.r-1iusvr4.r-16y2uox.r-1777fci.r-kzbkwu');
 
-    isUserScanned(tweetAuthor, (scanned) => {
-      try {
-        const request = indexedDB.open('AISMATwitter', 3);
+        // Check if matchedWordsContainer already exists, otherwise create it
+        let matchedWordsContainer = tweetElement.querySelector('.matched-words-container');
+        if (!matchedWordsContainer) {
+          // Create matchedWordsContainer element
+          matchedWordsContainer = document.createElement('div'); // Remove 'const' here
+          matchedWordsContainer.classList.add('matched-words-container', 'r-a023e6', 'css-901oao', 'css-1hf3ou5', 'r-1sw30gj', 'r-sqpuna', 'r-14j79pv', 'r-37j5jr', 'r-1gkfh8e', 'r-majxgm', 'r-56xrmm', 'r-bcqeeo', 'r-s1qlax', 'r-1vvnge1', 'r-qvutc0');
+          matchedWordsContainer.style.fontSize = '13px';
+          matchedWordsContainer.style.lineHeight = '12px';
+          matchedWordsContainer.style.padding = '4px';
 
-        request.onsuccess = (event) => {
-          const db = event.target.result;
+          // Append the matchedWordsContainer to the tweet element
+          topMenu.insertBefore(matchedWordsContainer, topMenu.firstChild);
+        }
 
-          const transaction = db.transaction('scanRecords', 'readonly');
-          const objectStore = transaction.objectStore('scanRecords');
+          if (dbChecked) {
+            tweetElement.classList.add('db_checked'); // Add the class to mark as checked
+            const linkElement = 'https://twitter.com/' + tweetAuthor;
 
-          const getRequest = objectStore.get(tweetAuthor);
+            if (dbChecked.matchedWords.length > 0) {
+              matchedWordsContainer.textContent = '✔️ ' + dbChecked.matchedWords.join(', ');
+              matchedWordsContainer.style.color = 'green';
+              matchedWordsContainer.style.backgroundColor = 'lightgreen';
 
-          getRequest.onsuccess = (event) => {
-            const result = event.target.result;
-            const matchedWords = result ? result.matchedWords : [];
-            const userScanned = result ? result.scanned : false;
 
-            if (!scanned) {
-              // User not checked
-              // Do nothing, no color change
-            } else if (matchedWords && matchedWords.length === 0) {
-              // User checked and no match
-              tweetElement.style.backgroundColor = 'lightgrey';
-            } else if (userScanned) {
-              // User checked, matched, and scanned
-              tweetElement.style.backgroundColor = 'green';
+                  const existingScanLink = tweetElement.querySelector('[data-testid="scanLink"]');
+
+                  if (!existingScanLink) {
+                    const scanLink = document.createElement('a');
+                    scanLink.setAttribute('href', linkElement);
+                    scanLink.innerText = dbChecked.scanned ? 'Rescan' : 'Scan'; // Toggle between "Scan" and "Rescan"
+                    // Apply the updated styles
+                    scanLink.style.margin = '4px';
+                    scanLink.style.padding = '0 16px';
+                    scanLink.style.color = 'white';
+                    scanLink.style.fontSize = '14px';
+                    scanLink.style.textDecoration = 'none';
+                    scanLink.style.fontWeight = 'bold';
+                    scanLink.style.backgroundColor = 'rgb(15, 20, 25)';
+                    scanLink.style.minHeight = '32px';
+                    scanLink.style.borderRadius = '9999px';
+                    // Add the CSS classes
+                    scanLink.classList.add('css-901oao', 'r-1awozwy', 'r-jwli3a', 'r-6koalj', 'r-18u37iz', 'r-16y2uox', 'r-37j5jr', 'r-a023e6', 'r-b88u0q', 'r-1777fci', 'r-rjixqe', 'r-bcqeeo', 'r-q4m81j', 'r-qvutc0');
+                    scanLink.setAttribute('data-testid', 'scanLink');
+
+                    const targetElement = tweetElement.querySelector('.css-1dbjc4n.r-1joea0r > .css-1dbjc4n.r-18u37iz.r-1ssbvtb.r-1wtj0ep');
+                    if (targetElement) {
+                      const parentElement = targetElement.parentNode;
+                      parentElement.insertBefore(scanLink, targetElement);
+                    }
+
+                    scanLink.addEventListener('click', (event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      scanLink.innerText = 'Rescan';
+
+                      const updatedProperties = {
+                        scanned: true
+                      };
+                      updateIndexedDB(tweetAuthor, updatedProperties);
+
+                      // Open the scan URL in the extension
+                      chrome.runtime.sendMessage({ openScanUrl: linkElement });
+
+                    });
+
+                  }
+
+
             } else {
-              // User checked, matched, but not scanned
-              tweetElement.style.backgroundColor = 'lightgreen';
+              matchedWordsContainer.textContent = '✖️ Not a match';
+              matchedWordsContainer.style.color = '#536471';
             }
+          } else {
+            matchedWordsContainer.textContent = '👇 Hover over the username to prescan';
+            matchedWordsContainer.style.color = 'grey';
+          }
 
-            const hoverCardParent = tweetElement.closest('[data-testid="hoverCardParent"]');
-            if (hoverCardParent) {
-              const followingElement = hoverCardParent.querySelector('.css-901oao.css-16my406.css-1hf3ou5.r-poiln3.r-a023e6.r-rjixqe.r-bcqeeo.r-qvutc0 > .css-901oao.css-16my406.r-poiln3.r-bcqeeo.r-qvutc0');
-
-              if (followingElement) {
-                const followingText = followingElement.innerText.trim().toLowerCase();
-                const following = followingText === 'following';
-
-                const userFollowIndicator = hoverCardParent.querySelector('[data-testid="userFollowIndicator"]');
-
-                const userFollow = userFollowIndicator ? true : false;
-                recordMatchedWords(tweetAuthor, matchedWords, userScanned, following, userFollow);
-
-              }
-            }
-          };
-        };
-
-        request.onerror = (error) => {
-          console.error('Error opening AISMATwitter:', error);
-        };
-
-      } catch (error) {
-        console.error('Error in finding matched words:', error);
-      }
-
-
-    });
-  }
-});
-
-
-  const cellInnerDivElements = document.querySelectorAll('.css-1dbjc4n.r-13qz1uu > [data-testid="cellInnerDiv"]');
-
-  cellInnerDivElements.forEach((element) => {
-    element.addEventListener('mouseover', () => {
-      clearTimeout(timeoutId);
-      setHoveredElement(element);
-    });
-  });
-
-  const hoverCardElements = document.querySelectorAll('[data-testid="HoverCard"]');
-
-  hoverCardElements.forEach((hoverCardElement) => {
-    const linkElement = hoverCardElement.querySelector('a.css-4rbku5.css-18t94o4.css-1dbjc4n.r-1loqt21.r-1wbh5a2.r-dnmrzs.r-1ny4l3l');
-
-    if (linkElement) {
-      const link = 'https://twitter.com' + linkElement.getAttribute('href');
-
-      const textElements = hoverCardElement.querySelectorAll('.css-901oao.r-18jsvk2.r-37j5jr.r-a023e6.r-16dba41.r-rjixqe.r-bcqeeo.r-qvutc0 > .css-901oao.css-16my406.r-poiln3.r-bcqeeo.r-qvutc0');
-
-      let mergedText = '';
-
-      textElements.forEach((textElement) => {
-        const text = textElement.textContent;
-        mergedText += text + ' ';
       });
-
-      if (mergedText !== previousMergedText) {
-        chrome.storage.local.get('criteria', function(result) {
-          const criteria = result.criteria;
-          const matchWords = criteria ? criteria.split(',').map(word => word.trim()) : [];
-
-          checkMatchWords(mergedText, link, matchWords);
-        });
-
-        previousMergedText = mergedText;
-      }
     }
+
+
   });
+
+  findHoverCard();
 }
 
-document.addEventListener('mouseover', (event) => {
-  timeoutId = setTimeout(() => {
-    findElement(event);
-  }, 1000);
-});
 
-// Add an event listener to the "Following" button
-document.addEventListener('click', (event) => {
-  const followingButton = event.target.closest('.css-18t94o4.css-1dbjc4n.r-oelmt8.r-42olwf.r-sdzlij.r-1phboty.r-rs99b7.r-2yi16.r-1qi8awa.r-1ny4l3l.r-ymttw5.r-o7ynqc.r-6416eg.r-lrvibr');
+function findHoverCard() {
+  const hoverCard = document.querySelector('[data-testid="HoverCard"]:not(.checked)');
+  if (hoverCard) {
+    const tweetahref = hoverCard.querySelector('a.css-4rbku5.css-18t94o4.css-1dbjc4n.r-1loqt21.r-1wbh5a2.r-dnmrzs.r-1ny4l3l');
+    const link = tweetahref.getAttribute('href');
+    const tweetAuthorMatch = link.match(/\/([^/]+)/);
+    const tweetAuthor = tweetAuthorMatch[1]; // Get the username (captured group)
 
-  if (followingButton) {
-    const hoverCardParent = followingButton.closest('[data-testid="hoverCardParent"]');
-    if (hoverCardParent) {
-      const tweetAuthorElement = hoverCardParent.querySelector('.css-901oao.css-16my406.r-poiln3.r-bcqeeo.r-qvutc0');
-      if (tweetAuthorElement) {
-        const tweetAuthor = tweetAuthorElement.innerText.trim();
-        const following = followingButton.innerText.trim() === 'Following';
-        updateFollowingStatus(tweetAuthor, following);
+    hoverCard.classList.add('checked'); // Add the class to mark as checked
+
+    const followingElement = hoverCard.querySelector('.css-901oao.css-16my406.css-1hf3ou5.r-poiln3.r-a023e6.r-rjixqe.r-bcqeeo.r-qvutc0');
+    if (followingElement) {
+      const followingText = followingElement.innerText.trim().toLowerCase();
+      const following = followingText === 'following';
+
+      const userFollowIndicator = hoverCard.querySelector('[data-testid="userFollowIndicator"]');
+      const userFollow = userFollowIndicator !== null;
+
+      const descriptionTextElement = document.querySelector('.css-901oao.r-18jsvk2.r-37j5jr.r-a023e6.r-16dba41.r-rjixqe.r-bcqeeo.r-qvutc0 > .css-901oao.css-16my406.r-poiln3.r-bcqeeo.r-qvutc0');
+      if (descriptionTextElement) {
+        getInitialMatchWords(function(initialMatchWords) {
+          const text = descriptionTextElement.textContent.toLowerCase();
+          const matchedWords = initialMatchWords.filter((word) => text.includes(word));
+          if (matchedWords.length > 0) {
+
+          }
+
+          const updatedProperties = {
+            matchedWords: matchedWords,
+            following: following,
+            userFollow: userFollow
+          };
+
+          updateIndexedDB(tweetAuthor, updatedProperties);
+        });
       }
     }
   }
-});
-
-// Function to update following status in IndexedDB
-function updateFollowingStatus(userHandle, following) {
-  const request = indexedDB.open('AISMATwitter', 3);
-
-  request.onsuccess = (event) => {
-    const db = event.target.result;
-
-    const transaction = db.transaction('scanRecords', 'readwrite');
-    const objectStore = transaction.objectStore('scanRecords');
-
-    const getRequest = objectStore.get(userHandle);
-
-    getRequest.onsuccess = (event) => {
-      const result = event.target.result;
-      if (result) {
-        result.following = following;
-        const putRequest = objectStore.put(result);
-
-        putRequest.onsuccess = () => {
-          console.log('Following status updated successfully.');
-        };
-
-        putRequest.onerror = (error) => {
-          console.error('Error updating following status:', error);
-        };
-      }
-    };
-  };
-
-  request.onerror = (error) => {
-    console.error('Error opening AISMATwitter:', error);
-  };
 }
+
+
+
+// Function to find elements on page load and when scrolling
+function findElementsOnLoadAndScroll() {
+  setTimeout(() => {
+    findElement();
+  }, 1000);
+}
+
+// Add event listeners to trigger the findElement function
+window.addEventListener('load', findElementsOnLoadAndScroll);
+window.addEventListener('scroll', findElementsOnLoadAndScroll);
+document.addEventListener('mouseover', findElementsOnLoadAndScroll);
