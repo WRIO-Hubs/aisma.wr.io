@@ -12,7 +12,7 @@ function scrapeData(attempt) {
   const profileElement = document.querySelector('a.css-4rbku5.css-18t94o4.css-901oao.r-18jsvk2.r-1loqt21.r-37j5jr.r-a023e6.r-16dba41.r-rjixqe.r-bcqeeo.r-qvutc0');
 
   if (targetElements.length >= 2) {
-    console.log('length >= 2: true');
+    //console.log('length >= 2: true');
     const data = profileElement.textContent.trim();
     const timeDataElement = targetElements[1];
     const timeData = timeDataElement.getAttribute('datetime');
@@ -21,13 +21,13 @@ function scrapeData(attempt) {
     const directMessageElement = document.querySelector('div[aria-label="Message"]');
     const directMessage = directMessageElement ? true : false;
 
-    console.log('Scraped data:', data);
+    /*console.log('Scraped data:', data);
     console.log('Within Seven Days:', withinSevenDays);
     console.log('Direct Message:', directMessage);
 
     chrome.storage.local.set({ profile_data: data, is_within_seven_days: withinSevenDays, direct_message: directMessage }, function() {
       console.log('Profile data stored');
-    });
+    });*/
 
     if (withinSevenDays && directMessage) {
       const twitterHandle = window.location.pathname.split('/')[1];
@@ -40,7 +40,7 @@ function scrapeData(attempt) {
         fetch(airtableUrl)
           .then(response => response.json())
           .then(data => {
-            console.log('Twitter handle stored in Airtable:', data);
+            //console.log('Twitter handle stored in Airtable:', data);
 
             // Send a message to the background script to check the badge count
             chrome.runtime.sendMessage({ action: 'updateBadgeCount' });
@@ -51,7 +51,7 @@ function scrapeData(attempt) {
             });
           })
           .catch(error => {
-            console.error('Failed to store Twitter handle in Airtable:', error);
+            console.error('Failed to store Twitter handle:', error);
               // Send a message to the background script to check the badge count
               chrome.runtime.sendMessage({ action: 'updateBadgeCount' });
 
