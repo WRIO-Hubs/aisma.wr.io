@@ -7,12 +7,12 @@ function isWithinSevenDays(timeData) {
   return diffInDays <= 7;
 }
 
+
 function scrapeData(attempt) {
   const targetElements = document.querySelectorAll('section[aria-labelledby^="accessible-list"] time[datetime]');
   const profileElement = document.querySelector('a.css-4rbku5.css-18t94o4.css-901oao.r-18jsvk2.r-1loqt21.r-37j5jr.r-a023e6.r-16dba41.r-rjixqe.r-bcqeeo.r-qvutc0');
 
   if (targetElements.length >= 2) {
-    //console.log('length >= 2: true');
     const data = profileElement.textContent.trim();
     const timeDataElement = targetElements[1];
     const timeData = timeDataElement.getAttribute('datetime');
@@ -21,26 +21,30 @@ function scrapeData(attempt) {
     const directMessageElement = document.querySelector('div[aria-label="Message"]');
     const directMessage = directMessageElement ? true : false;
 
-    /*console.log('Scraped data:', data);
-    console.log('Within Seven Days:', withinSevenDays);
-    console.log('Direct Message:', directMessage);
-
     chrome.storage.local.set({ profile_data: data, is_within_seven_days: withinSevenDays, direct_message: directMessage }, function() {
-      console.log('Profile data stored');
-    });*/
+      //console.log('Profile data stored');
+    });
+
+    const twitterHandle = window.location.pathname.split('/')[1];
+
+     const updatedProperties = {
+       scanned: true,
+       directMessage: directMessage,
+       scanned_timestamp: new Date().getTime() // Get the current timestamp
+     };
+     updateIndexedDB(twitterHandle, updatedProperties);
 
     if (withinSevenDays && directMessage) {
-      const twitterHandle = window.location.pathname.split('/')[1];
 
       chrome.storage.local.get('emailRecordId', function(result) {
         const emailRecordId = result.emailRecordId;
 
         // Store the Twitter handle in Airtable
-        const airtableUrl = `https://aisma-extension.wrio.workers.dev/api/storeTwitterHandle?emailRecordId=${emailRecordId}&twitterHandle=${encodeURIComponent(twitterHandle)}`;
+        const airtableUrl = `https://aisma-extension.wrio.workers.dev/api/storeTwitterHandle?emailRecordId=${emailRecordId}&twitterHandle=${twitterHandle}`;
         fetch(airtableUrl)
           .then(response => response.json())
           .then(data => {
-            //console.log('Twitter handle stored in Airtable:', data);
+            console.log('Twitter handle stored in the DB:', data);
 
             // Send a message to the background script to check the badge count
             chrome.runtime.sendMessage({ action: 'updateBadgeCount' });
@@ -51,7 +55,7 @@ function scrapeData(attempt) {
             });
           })
           .catch(error => {
-            console.error('Failed to store Twitter handle:', error);
+            console.error('Failed to store Twitter handle in Airtable:', error);
               // Send a message to the background script to check the badge count
               chrome.runtime.sendMessage({ action: 'updateBadgeCount' });
 
@@ -62,10 +66,12 @@ function scrapeData(attempt) {
           });
       });
     } else {
+
       // Close the current tab
       chrome.runtime.sendMessage({ closeTab: true }, function(response) {
         console.log('Tab closed:', response);
       });
+
     }
   } else {
     if (attempt == 5) {
