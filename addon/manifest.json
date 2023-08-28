@@ -47,7 +47,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["modules/tooltip.html", "modules/tooltip-compose.html", "assets/css/tooltip.css", "modules/webhook_response.json"],
+      "resources": ["modules/tweet_menu.html", "modules/styles.css", "modules/tooltip.html", "modules/tooltip_compose.html", "assets/css/tooltip.css", "modules/webhook_response.json"],
       "matches": ["<all_urls>"]
     }
   ],

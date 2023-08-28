@@ -43,29 +43,17 @@ function getInitialMatchWords(callback) {
   }
 
 
+
+
   // Function to find tweet elements and check if user is scanned
   function findElement() {
-
-    // Add the following code in the head section of your HTML document
-    const existingLink1 = document.querySelector('link[href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css"]');
-    if (!existingLink1) {
-      document.head.insertAdjacentHTML('beforeend','<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css">');
-      /*const linkElement1 = document.createElement('link');
-      linkElement1.rel = 'stylesheet';
-      linkElement1.href = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css';
-      document.head.appendChild(linkElement1);*/
-    }
-    /*const existingLink2 = document.querySelector('link[href="https://bizcom.wr.io/assets/css/style.bundle.css"]');
-    if (!existingLink2) {
-      const linkElement2 = document.createElement('link');
-      linkElement2.rel = 'stylesheet';
-      linkElement2.href = 'https://bizcom.wr.io/assets/css/style.bundle.css';
-      document.head.appendChild(linkElement2);
-    }*/
 
     const tweetElements = document.querySelectorAll('[data-testid="tweet"]:not(.db_checked)');
 
     tweetElements.forEach((tweetElement) => {
+
+      // Find the target element using its class names
+      const avatarTargetElement = tweetElement.querySelector('[data-testid="Tweet-User-Avatar"]');
 
       const tweetahref = tweetElement.querySelector('a.css-4rbku5.css-18t94o4.css-1dbjc4n.r-1loqt21.r-1wbh5a2.r-dnmrzs.r-1ny4l3l');
 
@@ -78,22 +66,12 @@ function getInitialMatchWords(callback) {
         DBChecking(tweetAuthor, (dbChecked) => {
           const topMenu = tweetElement.querySelector('.css-1dbjc4n.r-1iusvr4.r-16y2uox.r-1777fci.r-kzbkwu');
 
-          /*let followStatusParent = topMenu.querySelector('.follow-status-parent');
-          if (!followStatusParent) {
-            followStatusParent = document.createElement('div');
-            followStatusParent.classList.add('css-1dbjc4n', 'r-1kbdv8c', 'r-18u37iz', 'r-1wtj0ep', 'r-1s2bzr4', 'r-hzcoqn', 'follow-status-parent');
-            topMenu.appendChild(followStatusParent);
-          }*/
-
           // Check if matchedWordsContainer already exists, otherwise create it
           let matchedWordsContainer = tweetElement.querySelector('.matched-words-container');
-          if (!matchedWordsContainer) {
+          if (topMenu && !matchedWordsContainer) {
             // Create matchedWordsContainer element
             matchedWordsContainer = document.createElement('div'); // Remove 'const' here
-            matchedWordsContainer.classList.add('matched-words-container', 'r-a023e6', 'css-901oao', 'css-1hf3ou5', 'r-1sw30gj', 'r-sqpuna', 'r-14j79pv', 'r-37j5jr', 'r-1gkfh8e', 'r-majxgm', 'r-56xrmm', 'r-bcqeeo', 'r-s1qlax', 'r-1vvnge1', 'r-qvutc0');
-            matchedWordsContainer.style.fontSize = '13px';
-            matchedWordsContainer.style.lineHeight = '12px';
-            matchedWordsContainer.style.padding = '4px';
+            matchedWordsContainer.classList.add('matched-words-container', 'fs-13', 'mb-10', 'r-a023e6', 'css-901oao', 'css-1hf3ou5', 'r-1sw30gj', 'r-sqpuna', 'r-14j79pv', 'r-37j5jr', 'r-majxgm', 'r-56xrmm', 'r-bcqeeo', 'r-s1qlax', 'r-1vvnge1', 'r-qvutc0');
 
             // Append the matchedWordsContainer to the tweet element
             topMenu.insertBefore(matchedWordsContainer, topMenu.firstChild);
@@ -103,84 +81,165 @@ function getInitialMatchWords(callback) {
             tweetElement.classList.add('db_checked'); // Add the class to mark as checked
             const linkElement = 'https://twitter.com/' + tweetAuthor;
 
+
             let matchedWords = [];
             let isMatch = false;
 
-            if (dbChecked.matchedWords.length > 0) {
+            if (dbChecked.matchedWords && dbChecked.matchedWords.length > 0) {
               matchedWords = dbChecked.matchedWords;
               isMatch = true;
             }
 
-            const existingTimestampElement = tweetElement.querySelector('.recorded-timestamp');
-            if (!existingTimestampElement) {
-              // Calculate the time difference between now and the stored timestamp
-              const currentTime = new Date().getTime();
-              const timeDifference = currentTime - dbChecked.recorded_timestamp;
-
-              // Format the time difference in a human-readable format
-              const formattedTime = formatTimeDifference(timeDifference);
-
-              const timestampElement = document.createElement('div');
-              timestampElement.textContent = `Recorded: ${formattedTime}`;
-              timestampElement.style.float = 'right';
-              timestampElement.style.fontSize = '12px';
-              timestampElement.style.color = '#536471';
-              timestampElement.classList.add('css-1dbjc4n', 'r-1kbdv8c', 'r-18u37iz', 'r-1wtj0ep', 'r-1s2bzr4', 'r-hzcoqn', 'recorded-timestamp');
-
-              const timestampTargetElement = tweetElement.querySelector('.matched-words-container');
-              const timestampParentElement = timestampTargetElement.parentNode;
-              timestampParentElement.insertBefore(timestampElement, timestampTargetElement);
 
 
-              // Calculate the time difference between now and the stored lastTimeReplied timestamp
-              const lastTimeRepliedElement = document.createElement('div');
-              lastTimeRepliedElement.style.float = 'right';
-              lastTimeRepliedElement.style.fontSize = '12px';
-              lastTimeRepliedElement.style.color = '#536471';
-              lastTimeRepliedElement.classList.add('css-901oao', 'r-1awozwy', 'r-jwli3a', 'r-6koalj', 'r-18u37iz', 'r-16y2uox', 'r-37j5jr', 'r-a023e6', 'r-b88u0q', 'r-1777fci', 'r-rjixqe', 'r-bcqeeo', 'r-q4m81j', 'r-qvutc0', 'last-time-replied');
-
-              const lastTimeRepliedTargetElement = tweetElement.querySelector('.matched-words-container');
-              const lastTimeRepliedParentElement = lastTimeRepliedTargetElement.parentNode;
+          const existingTopElement = tweetElement.querySelector('.topMenu');
+          if (!existingTopElement) {
 
 
 
-              // Create the parent <div> element with the specified CSS classes
-              const parentDiv = document.createElement('div');
-              parentDiv.classList.add('css-1dbjc4n', 'r-1kbdv8c', 'r-18u37iz', 'r-1wtj0ep', 'r-1s2bzr4', 'r-hzcoqn');
+            // Function to add a stylesheet link to the <head> element
+            function addStylesheetLink(href) {const styleLink = document.createElement('link');styleLink.rel = 'stylesheet';styleLink.href = href;document.head.appendChild(styleLink);}
 
-              //
-              // Create the <svg> element
-              const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-              svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-              svgElement.setAttribute('height', '1.25em');
-              svgElement.setAttribute('viewBox', '0 0 640 512');
+            // Apply the external stylesheets to the fetched menu content
+            fetch(chrome.runtime.getURL('modules/tweet_menu.html'))
+              .then(response => response.text())
+              .then(html => {
+                // Add external stylesheets
+                addStylesheetLink(chrome.runtime.getURL('modules/styles.css'));
+                addStylesheetLink('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css');
 
-              // Add the SVG path data and attributes
-              svgElement.innerHTML = '<path d="M168.2 384.9c-15-5.4-31.7-3.1-44.6 6.4c-8.2 6-22.3 14.8-39.4 22.7c5.6-14.7 9.9-31.3 11.3-49.4c1-12.9-3.3-25.7-11.8-35.5C60.4 302.8 48 272 48 240c0-79.5 83.3-160 208-160s208 80.5 208 160s-83.3 160-208 160c-31.6 0-61.3-5.5-87.8-15.1zM26.3 423.8c-1.6 2.7-3.3 5.4-5.1 8.1l-.3 .5c-1.6 2.3-3.2 4.6-4.8 6.9c-3.5 4.7-7.3 9.3-11.3 13.5c-4.6 4.6-5.9 11.4-3.4 17.4c2.5 6 8.3 9.9 14.8 9.9c5.1 0 10.2-.3 15.3-.8l.7-.1c4.4-.5 8.8-1.1 13.2-1.9c.8-.1 1.6-.3 2.4-.5c17.8-3.5 34.9-9.5 50.1-16.1c22.9-10 42.4-21.9 54.3-30.6c31.8 11.5 67 17.9 104.1 17.9c141.4 0 256-93.1 256-208S397.4 32 256 32S0 125.1 0 240c0 45.1 17.7 86.8 47.7 120.9c-1.9 24.5-11.4 46.3-21.4 62.9zM144 272a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm144-32a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm80 32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/>';
+                // Create a temporary container to hold the fetched HTML
+                const tempContainer = document.createElement('div');
+                tempContainer.innerHTML = html;
 
-              parentDiv.classList.add('r-37j5jr');
+                // Get the content from the temporary container
+                const menuContent = tempContainer.querySelector('.menuContainer');
 
-              const svgTargetElement = tweetElement.querySelector('.matched-words-container');
-              const svgParentElement = svgTargetElement.parentNode;
-              svgParentElement.insertBefore(svgElement, svgTargetElement);
+                // Find the target element and its parent
+                const targetElement = tweetElement.querySelector('.matched-words-container');
+                const parentElement = targetElement.parentNode;
 
-              if (dbChecked.lastTimeReplied !== null) {
-                const lastTimeRepliedDifference = currentTime - dbChecked.lastTimeReplied;
-                const formattedLastTimeReplied = formatTimeDifference(lastTimeRepliedDifference);
-                lastTimeRepliedElement.textContent = `${formattedLastTimeReplied}`;
-              } else {
-                lastTimeRepliedElement.textContent = 'Never';
+                // Insert the fetched menu content before the target element
+                parentElement.insertBefore(menuContent, targetElement);
+              });
+
+
+
+
+
+
+              // Create the element and add the class
+              const topMenuElement = document.createElement('div');
+              topMenuElement.classList.add('topMenu');
+              matchedWordsContainer.parentNode.insertBefore(topMenuElement, matchedWordsContainer);
+
+
+            const existingFollowingElement = tweetElement.querySelector('.followingElement');
+            if (!existingFollowingElement) {
+
+              // Create the element and add the class
+              const followingElement = document.createElement('div');
+              followingElement.classList.add('followingElement');
+
+              // Create the <svg> element for the icon
+              const followingSvgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+              followingSvgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+              followingSvgElement.setAttribute('height', '1.25em');
+              followingSvgElement.setAttribute('viewBox', '0 0 512 512');
+              followingSvgElement.innerHTML = '<path d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6L269.8 394.5c-3.8 3.5-8.7 5.5-13.8 5.5s-10.1-2-13.8-5.5L135.1 294.6c-4.5-4.2-7.1-10.1-7.1-16.3c0-12.3 10-22.3 22.3-22.3l57.7 0 0-96c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 96 57.7 0c12.3 0 22.3 10 22.3 22.3c0 6.2-2.6 12.1-7.1 16.3z"/>'; // Add your SVG path data here
+
+              // Append the <svg> element to the followingElement
+              followingElement.appendChild(followingSvgElement);
+
+              // Set the tooltip text using the title attribute
+              followingElement.title = dbChecked.following ? 'Following' : 'Not following';
+              followingSvgElement.style.fill = dbChecked.following ? '#1D9BF0' : '#536471';
+
+              matchedWordsContainer.parentNode.insertBefore(followingElement, matchedWordsContainer);
+            }/* else {
+              // If the element already exists, change SVG fill color based on following status
+              const followingSvgElement = existingFollowingElement.querySelector('svg');
+              followingSvgElement.style.fill = dbChecked.following ? '#1D9BF0' : '#536471';
+            }*/
+
+
+
+
+            const existingFollowsYouElement = tweetElement.querySelector('.followsYouElement');
+            if (!existingFollowsYouElement) {
+                // Following? Create the <div> element for following status
+                const followsYouElement = document.createElement('div');
+                followsYouElement.classList.add('followsYouElement');
+                const followsYouSvgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                followsYouSvgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                followsYouSvgElement.setAttribute('height', '1.25em');
+                followsYouSvgElement.setAttribute('viewBox', '0 0 512 512');
+                followsYouSvgElement.innerHTML = '<path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM135.1 217.4l107.1-99.9c3.8-3.5 8.7-5.5 13.8-5.5s10.1 2 13.8 5.5l107.1 99.9c4.5 4.2 7.1 10.1 7.1 16.3c0 12.3-10 22.3-22.3 22.3H304v96c0 17.7-14.3 32-32 32H240c-17.7 0-32-14.3-32-32V256H150.3C138 256 128 246 128 233.7c0-6.2 2.6-12.1 7.1-16.3z"/>'; // Add your SVG path data here
+                // Append the <svg> element to the followsYouElement
+                followsYouElement.appendChild(followsYouSvgElement);
+
+                // Set the tooltip text using the title attribute
+                followsYouElement.title = dbChecked.userFollow ? 'Follows you' : 'Not following you';
+                followsYouSvgElement.style.fill = dbChecked.userFollow ? '#1D9BF0' : '#536471'; // Change color based on userFollow status
+
+                matchedWordsContainer.parentNode.insertBefore(followsYouElement, matchedWordsContainer);
+
+              }/* else {
+                // If the element already exists, change SVG fill color based on userFollow status
+                const followsYouSvgElement = existingFollowsYouElement.querySelector('svg');
+                followsYouSvgElement.style.fill = dbChecked.userFollow ? '#1D9BF0' : '#536471';
+              }*/
+
+
+
+              const retryInterval = 250; const maxRetries = 25; let retryCount = 0;
+
+              function loadingTopMenuHTML() {
+                const menuContainerElement = tweetElement.querySelector('.menuContainer');
+
+                if (!menuContainerElement && retryCount < maxRetries) { // checking if menu-container is available and we can populate the top menu
+                  retryCount++;
+                  setTimeout(loadingTopMenuHTML, retryInterval);
+                  return;
+                }
+
+                  const currentTime = new Date().getTime();
+
+                  const lastTimeRepliedElement = tweetElement.querySelector('.lastTimeReplied');
+                  if (dbChecked.lastTimeReplied !== null) {
+                    const lastTimeRepliedDifference = currentTime - dbChecked.lastTimeReplied;
+                    const formattedLastTimeReplied = formatTimeDifference(lastTimeRepliedDifference);
+                    lastTimeRepliedElement.innerHTML = `${formattedLastTimeReplied}`;
+                  } else {
+                    lastTimeRepliedElement.innerHTML = 'Never';
+                  }
+                  tweetElement.querySelector('.lastTimeRepliedTooltip').title = 'Last time, you replied to the user';
+
+                  const prescannedElement = tweetElement.querySelector('.prescanned');
+                  if (dbChecked.recorded_timestamp !== null) {
+                    // Calculate the time difference between now and the stored timestamp
+                    const timeDifference = currentTime - dbChecked.recorded_timestamp;
+                    // Format the time difference in a human-readable format
+                    const formattedTime = formatTimeDifference(timeDifference);
+                    prescannedElement.innerHTML = `${formattedTime}`;
+                  }
+
+                  const recordedTimestamp = new Date(dbChecked.recorded_timestamp);
+                  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                  const formattedDate = recordedTimestamp.toLocaleDateString('en-US', options);
+                  tweetElement.querySelector('.lastTimeScannedTooltip').title = `Time the profile was scanned · ${formattedDate}`;
+
               }
 
-              lastTimeRepliedParentElement.insertBefore(lastTimeRepliedElement, lastTimeRepliedTargetElement);
+              loadingTopMenuHTML();
+
+
 
               // has Direct Message?
               if (dbChecked.directMessage !== undefined) {
                 const directMessageElement = document.createElement('div');
                 directMessageElement.textContent = 'DM: ' + dbChecked.directMessage;
                 directMessageElement.style.backgroundColor = dbChecked.directMessage ? 'lightgreen' : 'lightgrey';
-                directMessageElement.style.float = 'right';
-                directMessageElement.style.fontSize = '12px';
                 directMessageElement.style.color = '#536471';
                 directMessageElement.classList.add('css-901oao', 'r-1awozwy', 'r-jwli3a', 'r-6koalj', 'r-18u37iz', 'r-16y2uox', 'r-37j5jr', 'r-a023e6', 'r-b88u0q', 'r-1777fci', 'r-rjixqe', 'r-bcqeeo', 'r-q4m81j', 'r-qvutc0');
 
@@ -189,53 +248,14 @@ function getInitialMatchWords(callback) {
                 directMessageParentElement.insertBefore(directMessageElement, directMessageTargetElement);
               }
 
-              // Following?
-                const followingElement = document.createElement('div');
-                followingElement.textContent = dbChecked.directMessage ? 'Following' : 'Not Following';
-                followingElement.style.backgroundColor = dbChecked.directMessage ? 'lightgreen' : 'lightgrey';
-                followingElement.style.float = 'right';
-                followingElement.style.fontSize = '12px';
-                followingElement.style.color = '#536471';
-                followingElement.classList.add('css-901oao', 'r-1awozwy', 'r-jwli3a', 'r-6koalj', 'r-18u37iz', 'r-16y2uox', 'r-37j5jr', 'r-a023e6', 'r-b88u0q', 'r-1777fci', 'r-rjixqe', 'r-bcqeeo', 'r-q4m81j', 'r-qvutc0');
 
-                const followingTargetElement = tweetElement.querySelector('.matched-words-container');
-                const followingParentElement = followingTargetElement.parentNode;
-                followingParentElement.insertBefore(followingElement, followingTargetElement);
-
-
-                const followStatusElement = document.createElement('div');
-                followStatusElement.classList.add('follow-status');
-                followStatusElement.style.display = 'flex';
-                followStatusElement.style.alignItems = 'center';
-                followStatusElement.style.float = 'right';
-                followStatusElement.style.fontSize = '12px';
-                followStatusElement.style.color = '#536471';
-                followingParentElement.insertBefore(followStatusElement, followingTargetElement);
-
-                followStatusElement.textContent = 'Following';
-
-
-
-
-              // Follows you?
-                const userFollowElement = document.createElement('div');
-                userFollowElement.textContent = dbChecked.userFollow ? 'Follows you' : 'Not following you';
-                userFollowElement.style.backgroundColor = dbChecked.userFollow ? 'lightgreen' : 'lightgrey';
-                userFollowElement.style.float = 'right';
-                userFollowElement.style.fontSize = '12px';
-                userFollowElement.style.color = '#536471';
-                userFollowElement.classList.add('css-901oao', 'css-1hf3ou5', 'r-1sw30gj', 'r-sqpuna', 'r-14j79pv', 'r-37j5jr', 'r-1gkfh8e', 'r-majxgm', 'r-56xrmm', 'r-13hce6t', 'r-bcqeeo', 'r-s1qlax', 'r-1vvnge1', 'r-qvutc0');
-
-                const userFollowTargetElement = tweetElement.querySelector('.matched-words-container');
-                const userFollowParentElement = userFollowTargetElement.parentNode;
-                userFollowParentElement.insertBefore(userFollowElement, userFollowTargetElement);
 
             }
 
+
             if (isMatch) {
               matchedWordsContainer.textContent = '✔️ ' + matchedWords.join(', ');
-              matchedWordsContainer.style.color = 'green';
-              matchedWordsContainer.style.backgroundColor = 'lightgreen';
+              tweetElement.querySelector('.matched-words-container').title = 'List of words that matched the given profile';
 
               const existingScanLink = tweetElement.querySelector('[data-testid="scanLink"]');
 
@@ -255,7 +275,7 @@ function getInitialMatchWords(callback) {
                    scanLink.style.minHeight = '32px';
                    scanLink.style.borderRadius = '9999px';
                    // Add the CSS classes
-                   scanLink.classList.add('css-901oao', 'r-1awozwy', 'r-jwli3a', 'r-6koalj', 'r-18u37iz', 'r-16y2uox', 'r-37j5jr', 'r-a023e6', 'r-b88u0q', 'r-1777fci', 'r-rjixqe', 'r-bcqeeo', 'r-q4m81j', 'r-qvutc0');
+                   scanLink.classList.add('r-kzbkwu', 'css-901oao', 'r-1awozwy', 'r-jwli3a', 'r-6koalj', 'r-18u37iz', 'r-16y2uox', 'r-37j5jr', 'r-a023e6', 'r-b88u0q', 'r-1777fci', 'r-rjixqe', 'r-bcqeeo', 'r-q4m81j', 'r-qvutc0');
                    scanLink.setAttribute('data-testid', 'scanLink');
 
                    const targetElement = tweetElement.querySelector('.css-1dbjc4n.r-1joea0r > .css-1dbjc4n.r-18u37iz.r-1ssbvtb.r-1wtj0ep');
@@ -278,7 +298,11 @@ function getInitialMatchWords(callback) {
             } else {
               matchedWordsContainer.textContent = '✖️ Not a match';
               matchedWordsContainer.style.color = '#536471';
+              tweetElement.querySelector('.matched-words-container').title = 'The list of words can be configured at https://aisma.wr.io/dashboard/';
             }
+
+
+
           } else {
             matchedWordsContainer.textContent = '👇 Hover over the username to prescan';
             matchedWordsContainer.style.color = 'grey';
@@ -369,11 +393,11 @@ function getInitialMatchWords(callback) {
           updateIndexedDB(tweetAuthor, updatedProperties);
 
           // Update the lastTimeRepliedElement if it exists
-          const lastTimeRepliedElement = document.querySelector(`.matched-words-container[data-author="${tweetAuthor}"] + .last-time-replied`);
+          /*const lastTimeRepliedElement = document.querySelector(`.matched-words-container[data-author="${tweetAuthor}"] + .last-time-replied`);
           if (lastTimeRepliedElement) {
             const lastTimeRepliedDifference = new Date().getTime() - updatedProperties.lastTimeReplied;
             lastTimeRepliedElement.textContent = `Last Replied: ${formatTimeDifference(lastTimeRepliedDifference)}`;
-          }
+          }*/
         }
       });
     });

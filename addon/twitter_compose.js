@@ -76,7 +76,7 @@ function showTooltip(data) {
         document.head.appendChild(styleElement);
       })
       .then(() => {
-        fetch(chrome.runtime.getURL('modules/tooltip-compose.html'))
+        fetch(chrome.runtime.getURL('modules/tooltip_compose.html'))
           .then((response) => response.text())
           .then((html) => {
             const parser = new DOMParser();
