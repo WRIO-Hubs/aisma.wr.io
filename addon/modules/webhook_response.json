@@ -1,7 +1,0 @@
-{
-  "message": "Webhook request successful",
-  "data": {
-    "status": "success",
-    "message": "Webhook response received"
-  }
-}

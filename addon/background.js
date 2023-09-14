@@ -4,52 +4,6 @@ self.addEventListener('fetch', (event) => {
   // Handle intercepted fetch requests here
 });
 
-function startDB() {
-// Open a connection to the IndexedDB database
-const request = indexedDB.open('MyDatabase', 2);
-console.log('1');
-// Handle the database upgrade event
-request.onupgradeneeded = (event) => {
-  const db = event.target.result;
-console.log('2');
-  // Create an object store if it doesn't exist
-  if (!db.objectStoreNames.contains('myObjectStore')) {
-    console.log('3');
-    db.createObjectStore('myObjectStore', { keyPath: 'id', autoIncrement: true });
-  }
-};
-
-// Handle successful database opening
-request.onsuccess = (event) => {
-  const db = event.target.result;
-console.log('4');
-  // Start a transaction and get the object store
-  const transaction = db.transaction('myObjectStore', 'readwrite');
-  const objectStore = transaction.objectStore('myObjectStore');
-console.log('4');
-  // Data to be added to the object store
-  const data = { text: 'Hello, world!' };
-
-  // Add the data to the object store
-  const addRequest = objectStore.add(data);
-
-  // Handle the success event of the add request
-  addRequest.onsuccess = (event) => {
-    console.log('Data added to IndexedDB successfully:', event.target.result);
-  };
-
-  // Handle the error event of the add request
-  addRequest.onerror = (event) => {
-    console.error('Error adding data to IndexedDB:', event.target.error);
-  };
-};
-
-// Handle database opening error
-request.onerror = (event) => {
-  console.error('Error opening IndexedDB:', event.target.error);
-};
-}
-
 
 chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
   if (request.criteria && request.emailRecordId) {
@@ -90,21 +44,6 @@ chrome.runtime.onMessageExternal.addListener(function(request, sender, sendRespo
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
-  if (request.test) {
-    console.log('Message received in background script: test!!!');
-
-    // Forward the message to 2.js content script
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-      const activeTab = tabs[0];
-      chrome.tabs.sendMessage(activeTab.id, { test: request.test }, function(response) {
-        console.log('Message forwarded to 2.js content script');
-      });
-    });
-
-    sendResponse({ success: true });
-  }
-
-
   if (request.openScanUrl) {
     const scanUrl = request.openScanUrl + "?scan";
 
@@ -114,27 +53,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
     // Send a response back to the content script
     sendResponse({ success: true });
-  }
-
-  if (request.directMessage !== undefined) {
-    // Log the directMessage value
-    console.log('Direct Message from twitter_profile.js:', request.directMessage);
-
-    const updatedProperties = {
-      scanned: true,
-      directMessage: request.directMessage,
-      scanned_timestamp: new Date().getTime() // Get the current timestamp*/
-    };
-    const userHandle = 'test';
-
-    //updateIndexedDB(userHandle, updatedProperties);
-startDB();
-console.log('start');
-    // Respond immediately before the message port is closed
-    sendResponse({ message: 'Direct message received and processed.' });
-
-    // Return true to indicate that the response has been sent
-    return true;
   }
 
   if (request.closeTab) {

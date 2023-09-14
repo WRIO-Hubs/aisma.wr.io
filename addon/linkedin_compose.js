@@ -261,7 +261,7 @@ function showDescriptionTextWithReplacements(descriptionElement) {
     // Apply styles to the element
     descriptionElement.style.backgroundColor = 'lightgreen';
     descriptionElement.style.border = '2px solid green';
-    console.log('success');
+    console.log('Note: need to change here, see the code');
   }
 
   // Add the element to the Set of processed elements

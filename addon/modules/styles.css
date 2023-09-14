@@ -2,6 +2,7 @@
 .mb-10{margin-bottom:10px}
 .matchedWordsContainer{background-color:lightgreen;color:green}
 .matched-words-container{padding:5px}
-.display-none{display:none}
+.display-none{display:none!important}
 .followsYouElement{position:absolute;z-index:999;left:-66px;top:0}
 .followingElement{position:absolute;z-index:999;left:-66px;top:20px}
+.directMessageElement{position:absolute;z-index:999;left:-45px;top:45px}

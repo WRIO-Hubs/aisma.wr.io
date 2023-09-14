@@ -8,7 +8,7 @@
 		<meta name="keywords" content="Dashboard" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta property="og:locale" content="en_US" />
-		<link rel="shortcut icon" href="https://bizcom.wr.io/assets/media/logos/favicon.ico" />
+		<link rel="shortcut icon" href="https://aisma.wr.io/assets/media/logos/favicon.ico" />
 		<!--begin::Fonts-->
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
 		<!--end::Fonts-->
@@ -21,7 +21,7 @@
 		<link href="https://bizcom.wr.io/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
 		<link href="assets/css/custom.css" rel="stylesheet" type="text/css" />
 
-    <script src="popup.js"></script>
+    <script src="modules/popup.js"></script>
   </head>
 <body data-kt-name="good" id="kt_body" class="auth-bg app-blank">
 
@@ -100,6 +100,21 @@
             <div class="text-center px-4">
               <img class="mw-100 mh-300px" alt="" src="https://bizcom.wr.io/assets/media/illustrations/sketchy-1/5.png" />
             </div>
+
+            <div class="fv-row mb-10">
+              <!--begin::Wrapper-->
+              <div class="d-flex flex-stack mb-2">
+                <!--begin::Label-->
+                <label class="form-label fw-bold text-dark fs-6 mb-0">Criteria<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="AISMA will highlight all LinkedIn and 𝕏 profiles where it finds at least one of the specified words or letter combinations. It is not case-sensitive"></i></label>
+                <!--end::Label-->
+              </div>
+              <!--end::Wrapper-->
+              <!--begin::Input-->
+              <input id="criteria" class="form-control form-control-lg form-control-solid mb-3" type="text" name="handle" disabled />
+              <!--end::Input-->
+              <div class="text-muted text-left">Criteria can be set up in the Dashboard</div>
+            </div>
+
             <!-- Open Dashboard Button -->
             <button id="openDashboardButton" class="btn btn-lg btn-primary w-100 mb-5">Open Dashboard</button>
             <div class="text-center">

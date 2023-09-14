@@ -81,6 +81,17 @@ function checkLogin() {
 document.addEventListener('DOMContentLoaded', function () {
   checkLogin();
 
+  // Check if 'criteria' exists in chrome.storage.local
+  chrome.storage.local.get(['criteria'], function (result) {
+    const criteria = result.criteria;
+
+    if (criteria) {
+      // If 'criteria' exists, display it in the HTML
+      const criteriaElement = document.getElementById('criteria');
+      criteriaElement.value = criteria;
+    }
+  });
+
   const openDashboardButton = document.getElementById('openDashboardButton');
   openDashboardButton.addEventListener('click', function () {
     // Use the chrome.tabs.create method to open a new tab with the dashboard URL
